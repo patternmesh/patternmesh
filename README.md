@@ -1,5 +1,16 @@
 # patternmesh
 
+[![npm version](https://img.shields.io/npm/v/%40patternmeshjs%2Fcore?label=%40patternmeshjs%2Fcore)](https://www.npmjs.com/package/@patternmeshjs/core)
+[![npm version](https://img.shields.io/npm/v/%40patternmeshjs%2Faws-sdk-v3?label=%40patternmeshjs%2Faws-sdk-v3)](https://www.npmjs.com/package/@patternmeshjs/aws-sdk-v3)
+[![npm version](https://img.shields.io/npm/v/%40patternmeshjs%2Fstreams?label=%40patternmeshjs%2Fstreams)](https://www.npmjs.com/package/@patternmeshjs/streams)
+[![CI](https://github.com/patternmesh/patternmesh/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/patternmesh/patternmesh/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/patternmesh/patternmesh/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/patternmesh/patternmesh/actions/workflows/codeql.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
+[![provenance](https://img.shields.io/badge/npm-provenance-informational)](https://docs.npmjs.com/generating-provenance-statements)
+[![Node.js](https://img.shields.io/node/v/%40patternmeshjs%2Fcore.svg)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Docs](https://img.shields.io/badge/docs-patternmesh.github.io-blue)](https://patternmesh.github.io/patternmesh/)
+
 TypeScript-first DynamoDB tooling for **single-table design**: logical entities,
 hidden physical keys, explicit access patterns, typed repositories, and
 explainable compiled operations.

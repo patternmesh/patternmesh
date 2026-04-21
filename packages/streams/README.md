@@ -1,5 +1,10 @@
 # @patternmeshjs/streams
 
+[![npm version](https://img.shields.io/npm/v/%40patternmeshjs%2Fstreams.svg)](https://www.npmjs.com/package/@patternmeshjs/streams)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+[![CI](https://github.com/patternmesh/patternmesh/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/patternmesh/patternmesh/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-patternmesh.github.io-blue)](https://patternmesh.github.io/patternmesh/api/streams/)
+
 Typed DynamoDB Streams decoding for `@patternmeshjs/core` entity shapes.
 
 This package is intentionally small: decode stream records, enforce stream view
