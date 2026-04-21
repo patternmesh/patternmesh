@@ -21,7 +21,7 @@
     "@arethetypeswrong/cli": "^0.18.2",
     "@changesets/cli": "^2.29.7",
     "@eslint/js": "^9.16.0",
-    "eslint": "^9.16.0",
+    "eslint": "^10.2.1",
     "marked": "^18.0.2",
     "publint": "^0.3.15",
     "syncpack": "^13.0.4",
