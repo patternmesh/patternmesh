@@ -81,6 +81,37 @@ TypeDoc output plus rendered markdown from `README.md`, `docs/*.md`, and
 `docs/guides/*.md`. The `pages.yml` workflow publishes this on every push to
 `main`.
 
+## Local CI with act (optional)
+
+[act](https://github.com/nektos/act) runs our GitHub Actions workflows
+locally. The repo ships an `.actrc` with portable image mappings for
+`ubuntu-latest` and `ubuntu-24.04`, so a plain `act` invocation picks the
+right base image:
+
+```bash
+act push -W .github/workflows/ci.yml --job test
+```
+
+Host-specific flags belong in your personal `~/.actrc`, not the repo file.
+On an Apple Silicon Mac with Docker Desktop, the minimal override is:
+
+```
+--container-architecture linux/amd64
+```
+
+On Linux x86 you typically do not need any host-specific overrides. Do **not**
+manually mount `/var/run/docker.sock` — act mounts the host Docker socket into
+the runner container automatically, and an extra mount fails with
+`Duplicate mount point`.
+
+Caveats:
+
+- `act` cannot deploy the Pages workflow (`pages.yml` deploy job uses GitHub
+  infrastructure). Use it for `ci.yml` / `release.yml` iteration only.
+- Steps that `docker compose up` DynamoDB Local still run fine under act
+  because act exposes the host Docker daemon to the runner container by
+  default; you do not need to configure the socket mount yourself.
+
 ## Design principles
 
 1. **Explicit over magic.** No implicit routing, no silent fallbacks.

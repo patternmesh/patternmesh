@@ -36,11 +36,11 @@ jobs:
           docker compose logs dynamodb-local || true
           exit 1
 
-      - name: Generate API docs
-        run: pnpm docs:api
-
       - name: Build
         run: pnpm build
+
+      - name: Generate API docs
+        run: pnpm docs:api
 
       - name: Test
         run: pnpm test
