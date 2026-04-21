@@ -1,0 +1,7 @@
+{
+  "entryPoints": ["packages/core/src/index.ts"],
+  "out": "docs/api/core",
+  "tsconfig": "packages/core/tsconfig.json",
+  "readme": "packages/core/README.md",
+  "name": "@patternmesh/core"
+}

@@ -1,0 +1,28 @@
+name: Feature request
+description: Propose a new capability or API improvement
+title: "[feature]: "
+labels:
+  - enhancement
+body:
+  - type: input
+    id: package
+    attributes:
+      label: Related package
+      placeholder: "@patternmesh/core"
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What use case is not well served today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

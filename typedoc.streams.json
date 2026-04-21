@@ -1,0 +1,7 @@
+{
+  "entryPoints": ["packages/streams/src/index.ts"],
+  "out": "docs/api/streams",
+  "tsconfig": "packages/streams/tsconfig.json",
+  "readme": "packages/streams/README.md",
+  "name": "@patternmesh/streams"
+}

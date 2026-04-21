@@ -1,0 +1,7 @@
+{
+  "entryPoints": ["packages/adapter-aws-sdk-v3/src/index.ts"],
+  "out": "docs/api/aws-sdk-v3",
+  "tsconfig": "packages/adapter-aws-sdk-v3/tsconfig.json",
+  "readme": "packages/adapter-aws-sdk-v3/README.md",
+  "name": "@patternmesh/aws-sdk-v3"
+}

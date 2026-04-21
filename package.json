@@ -1,0 +1,32 @@
+{
+  "name": "patternmesh-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "eslint .",
+    "typecheck": "pnpm -r exec tsc --noEmit",
+    "docs:api": "typedoc --options typedoc.core.json && typedoc --options typedoc.adapter.json && typedoc --options typedoc.streams.json",
+    "docs:site": "node scripts/build-site.mjs --with-api",
+    "publint": "publint packages/core && publint packages/adapter-aws-sdk-v3 && publint packages/streams",
+    "attw": "attw --profile esm-only --pack packages/core && attw --profile esm-only --pack packages/adapter-aws-sdk-v3 && attw --profile esm-only --pack packages/streams",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "release": "changeset publish",
+    "smoke:pack": "node tests-smoke/smoke.mjs"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@changesets/cli": "^2.29.7",
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "marked": "^15.0.12",
+    "publint": "^0.3.15",
+    "syncpack": "^13.0.4",
+    "typedoc": "^0.28.14",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  }
+}

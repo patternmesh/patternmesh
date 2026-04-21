@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{TITLE}} · patternmesh</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #1a1a1a;
+        --fg-muted: #555;
+        --bg: #ffffff;
+        --bg-soft: #f6f7f9;
+        --accent: #2b6cb0;
+        --border: #e1e4e8;
+        --code-bg: #f3f4f6;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #e6edf3;
+          --fg-muted: #9ba3ae;
+          --bg: #0d1117;
+          --bg-soft: #161b22;
+          --accent: #58a6ff;
+          --border: #30363d;
+          --code-bg: #161b22;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        color: var(--fg);
+        background: var(--bg);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      header {
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-soft);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      header .inner {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      header .brand {
+        font-weight: 700;
+        color: var(--fg);
+      }
+      header nav {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.95rem;
+      }
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        line-height: 1.3;
+      }
+      h1 {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.35em;
+      }
+      h2 {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.25em;
+        margin-top: 2em;
+      }
+      code {
+        background: var(--code-bg);
+        padding: 0.1em 0.35em;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      pre {
+        background: var(--code-bg);
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 0.9em;
+      }
+      pre code {
+        background: transparent;
+        padding: 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1em 0;
+      }
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 0.5em 0.75em;
+        text-align: left;
+      }
+      th {
+        background: var(--bg-soft);
+      }
+      blockquote {
+        border-left: 4px solid var(--accent);
+        padding: 0.25em 1em;
+        margin: 1em 0;
+        color: var(--fg-muted);
+        background: var(--bg-soft);
+      }
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 1.5rem 1rem;
+        text-align: center;
+        color: var(--fg-muted);
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="inner">
+        <a class="brand" href="{{ROOT}}index.html">patternmesh</a>
+        <nav>
+          <a href="{{ROOT}}index.html">Home</a>
+          <a href="{{ROOT}}docs/guides/relations.html">Guides</a>
+          <a href="{{ROOT}}docs/single-table-patterns.html">Design</a>
+          <a href="{{ROOT}}api/core/index.html">API: core</a>
+          <a href="{{ROOT}}api/adapter/index.html">API: adapter</a>
+          <a href="{{ROOT}}api/streams/index.html">API: streams</a>
+          <a href="https://github.com/patternmesh/patternmesh">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main>{{BODY}}</main>
+    <footer>
+      patternmesh ·
+      <a href="https://github.com/patternmesh/patternmesh">github.com/patternmesh/patternmesh</a>
+    </footer>
+  </body>
+</html>

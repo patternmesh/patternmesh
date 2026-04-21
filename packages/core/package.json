@@ -1,0 +1,62 @@
+{
+  "name": "@patternmesh/core",
+  "version": "0.9.0",
+  "description": "TypeScript-first DynamoDB modeling: logical entities, hidden keys, explicit access patterns, and typed repositories for single-table design.",
+  "license": "Apache-2.0",
+  "author": "patternmesh contributors",
+  "homepage": "https://github.com/patternmesh/patternmesh/tree/main/packages/core#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patternmesh/patternmesh.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/patternmesh/patternmesh/issues"
+  },
+  "keywords": [
+    "dynamodb",
+    "aws",
+    "typescript",
+    "orm",
+    "odm",
+    "single-table-design",
+    "type-safe",
+    "esm",
+    "patternmesh"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "expect-type": "^1.1.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
