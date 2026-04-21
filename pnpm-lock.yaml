@@ -21,8 +21,8 @@ importers:
         specifier: ^9.16.0
         version: 9.39.4
       marked:
-        specifier: ^15.0.12
-        version: 15.0.12
+        specifier: ^18.0.2
+        version: 18.0.2
       publint:
         specifier: ^0.3.15
         version: 0.3.18
@@ -1788,9 +1788,9 @@ packages:
     peerDependencies:
       marked: '>=1 <16'
 
-  marked@15.0.12:
-    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
-    engines: {node: '>= 18'}
+  marked@18.0.2:
+    resolution: {integrity: sha512-NsmlUYBS/Zg57rgDWMYdnre6OTj4e+qq/JS2ot3KrYLSoHLw+sDu0Nm1ZGpRgYAq6c+b1ekaY5NzVchMCQnzcg==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   marked@9.1.6:
@@ -4424,7 +4424,7 @@ snapshots:
       node-emoji: 2.2.0
       supports-hyperlinks: 3.2.0
 
-  marked@15.0.12: {}
+  marked@18.0.2: {}
 
   marked@9.1.6: {}
 
