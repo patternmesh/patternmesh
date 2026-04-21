@@ -6,6 +6,17 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
     versioning-strategy: increase
+    ignore:
+      # Vitest 4 requires Vite 6; our transitive Vite resolution stays on 5
+      # until the broader Vitest + Vite peer graph stabilises. Revisit when
+      # Vitest 3 or a Vitest 4 + Vite 6 combined bump is viable.
+      - dependency-name: "vitest"
+        versions: [">=4"]
+      # TypeScript 6 breaks tsup's internal declaration bundling because
+      # rollup-plugin-dts sets `baseUrl` internally and TS 6 made that a
+      # hard error. Revisit when tsup ships a TS 6-compatible release.
+      - dependency-name: "typescript"
+        versions: [">=6"]
 
   - package-ecosystem: github-actions
     directory: /
