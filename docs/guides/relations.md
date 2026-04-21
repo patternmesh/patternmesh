@@ -20,7 +20,7 @@ A single-table `AppTable` and compiled entities for every participant:
 ```ts
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { createAwsSdkV3Adapter } from "@patternmesh/aws-sdk-v3";
+import { createAwsSdkV3Adapter } from "@patternmeshjs/aws-sdk-v3";
 import {
   connect,
   defineTable,
@@ -29,7 +29,7 @@ import {
   id,
   key,
   string,
-} from "@patternmesh/core";
+} from "@patternmeshjs/core";
 
 const AppTable = defineTable({
   name: "app",

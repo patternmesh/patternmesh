@@ -20,7 +20,7 @@ The Org / User / Membership setup from
 `OrgSummary` entity for the write-recipe example:
 
 ```ts
-import { entity, id, key, number, string } from "@patternmesh/core";
+import { entity, id, key, number, string } from "@patternmeshjs/core";
 
 const OrgSummary = entity("OrgSummary", {
   orgId: id("org").required(),

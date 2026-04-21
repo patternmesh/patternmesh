@@ -1,7 +1,7 @@
 {
-  "name": "@patternmesh/streams",
+  "name": "@patternmeshjs/streams",
   "version": "0.9.0",
-  "description": "Typed DynamoDB Streams decoding utilities for @patternmesh/core entities.",
+  "description": "Typed DynamoDB Streams decoding utilities for @patternmeshjs/core entities.",
   "license": "Apache-2.0",
   "author": "patternmesh contributors",
   "homepage": "https://github.com/patternmesh/patternmesh/tree/main/packages/streams#readme",

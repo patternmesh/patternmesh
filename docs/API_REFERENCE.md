@@ -11,9 +11,9 @@ not generated files.
 The latest API reference is built from `main` and published as part of the
 docs site on GitHub Pages:
 
-- **<https://patternmesh.github.io/patternmesh/api/core/>** — `@patternmesh/core`
-- **<https://patternmesh.github.io/patternmesh/api/adapter/>** — `@patternmesh/aws-sdk-v3`
-- **<https://patternmesh.github.io/patternmesh/api/streams/>** — `@patternmesh/streams`
+- **<https://patternmesh.github.io/patternmesh/api/core/>** — `@patternmeshjs/core`
+- **<https://patternmesh.github.io/patternmesh/api/adapter/>** — `@patternmeshjs/aws-sdk-v3`
+- **<https://patternmesh.github.io/patternmesh/api/streams/>** — `@patternmeshjs/streams`
 
 ## Generate locally
 

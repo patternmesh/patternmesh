@@ -18,8 +18,8 @@ breaking changes that improve safety and clarity; please read carefully.
 ### Changed (breaking)
 
 - **Packages renamed**: `@dynamodb/core`, `@dynamodb/aws-sdk-v3`, and
-  `@dynamodb/streams` are now published as `@patternmesh/core`,
-  `@patternmesh/aws-sdk-v3`, and `@patternmesh/streams`. Update all imports
+  `@dynamodb/streams` are now published as `@patternmeshjs/core`,
+  `@patternmeshjs/aws-sdk-v3`, and `@patternmeshjs/streams`. Update all imports
   and `package.json` dependencies.
 - **`repository.create()` now enforces not-exists.** The prior unconditional
   write has been renamed to `repository.put(data)`. A new
@@ -52,7 +52,7 @@ breaking changes that improve safety and clarity; please read carefully.
 - **`repository.put(data)`** — unconditional write (previous `create` behavior).
 - **`ItemAlreadyExistsError`**, **`QueryLimitError`**, **`StreamDecodeError`**,
   **`StreamViewTypeError`**, **`UnknownEntityError`** typed error classes.
-- **`isTtlRemove(record)`** helper in `@patternmesh/streams` for detecting
+- **`isTtlRemove(record)`** helper in `@patternmeshjs/streams` for detecting
   DynamoDB TTL–driven REMOVE events.
 - **`json()` field validation**: non-serializable values now throw
   `ValidationError`.
@@ -70,12 +70,12 @@ breaking changes that improve safety and clarity; please read carefully.
   release with npm OIDC provenance.
 - **TypeDoc generation** via `pnpm docs:api`, intended for CI-hosted publishing
   rather than committed HTML.
-- **`@types/aws-lambda` no longer required** to consume `@patternmesh/streams`
+- **`@types/aws-lambda` no longer required** to consume `@patternmeshjs/streams`
   — the minimal stream event shapes are now inlined.
 
 ### Fixed
 
-- Published `.d.ts` in `@patternmesh/streams` no longer imports from
+- Published `.d.ts` in `@patternmeshjs/streams` no longer imports from
   `aws-lambda`.
 - `ConnectedDb.batchGet`, `orchestrate`, and `lifecycle` are now correctly
   typed as non-optional (they are always present at runtime).
@@ -94,7 +94,7 @@ for these versions.
 
 ### Added
 
-- **`@patternmesh/streams`** package with typed DynamoDB stream decoding,
+- **`@patternmeshjs/streams`** package with typed DynamoDB stream decoding,
   entity-discriminator routing, `decodeStreamRecord`, `decodeStreamEvent`,
   `handleStreamByEntity`, strict vs. tolerant unknown-entity modes, and
   `StreamViewType` safety checks.

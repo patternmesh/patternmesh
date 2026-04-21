@@ -1,6 +1,6 @@
-# @patternmesh/streams
+# @patternmeshjs/streams
 
-Typed DynamoDB Streams decoding for `@patternmesh/core` entity shapes.
+Typed DynamoDB Streams decoding for `@patternmeshjs/core` entity shapes.
 
 This package is intentionally small: decode stream records, enforce stream view
 contracts, and route by entity discriminator.
@@ -8,7 +8,7 @@ contracts, and route by entity discriminator.
 ## Install
 
 ```bash
-pnpm add @patternmesh/streams
+pnpm add @patternmeshjs/streams
 ```
 
 Requirements:
@@ -30,7 +30,7 @@ Requirements:
 ## Example
 
 ```ts
-import { decodeStreamEvent, isTtlRemove } from "@patternmesh/streams";
+import { decodeStreamEvent, isTtlRemove } from "@patternmeshjs/streams";
 
 const decoded = decodeStreamEvent(event, {
   decoders: {
@@ -48,7 +48,7 @@ const ttlRemovals = event.Records.filter(isTtlRemove);
 
 ```ts
 import type { DynamoDBStreamHandler } from "aws-lambda";
-import { handleStreamByEntity } from "@patternmesh/streams";
+import { handleStreamByEntity } from "@patternmeshjs/streams";
 
 export const handler: DynamoDBStreamHandler = async (event) => {
   await handleStreamByEntity(event, {

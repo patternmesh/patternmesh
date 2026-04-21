@@ -36,7 +36,7 @@ import {
   record,
   string,
   stringSet,
-} from "@patternmesh/core";
+} from "@patternmeshjs/core";
 
 const AppTable = defineTable({
   name: "app",
@@ -132,7 +132,7 @@ await db.User.update({ userId: "usr_1" })
 ### `json()` payloads
 
 ```ts
-import { json } from "@patternmesh/core";
+import { json } from "@patternmeshjs/core";
 
 // in the entity schema
 // metadata: json<{ source: string; ingestedAt: number }>().optional(),

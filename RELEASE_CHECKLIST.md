@@ -4,7 +4,7 @@ Use this checklist before publishing any release from this monorepo.
 
 ## Metadata
 
-- Confirm package names are correct: `@patternmesh/core`, `@patternmesh/aws-sdk-v3`, `@patternmesh/streams`
+- Confirm package names are correct: `@patternmeshjs/core`, `@patternmeshjs/aws-sdk-v3`, `@patternmeshjs/streams`
 - Confirm `repository`, `homepage`, and `bugs` URLs point at `https://github.com/patternmesh/patternmesh`
 - Confirm `license`, `sideEffects`, and `publishConfig.provenance` are present in each publishable `package.json`
 

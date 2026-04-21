@@ -30,9 +30,9 @@ const pages = [
   { src: "docs/guides/lifecycle.md", dest: "docs/guides/lifecycle.html", title: "Lifecycle recipes" },
   { src: "docs/guides/complex-attributes.md", dest: "docs/guides/complex-attributes.html", title: "Complex attributes" },
   { src: "docs/guides/streams-advanced.md", dest: "docs/guides/streams-advanced.html", title: "Streams advanced" },
-  { src: "packages/core/README.md", dest: "packages/core/index.html", title: "@patternmesh/core" },
-  { src: "packages/adapter-aws-sdk-v3/README.md", dest: "packages/adapter-aws-sdk-v3/index.html", title: "@patternmesh/aws-sdk-v3" },
-  { src: "packages/streams/README.md", dest: "packages/streams/index.html", title: "@patternmesh/streams" },
+  { src: "packages/core/README.md", dest: "packages/core/index.html", title: "@patternmeshjs/core" },
+  { src: "packages/adapter-aws-sdk-v3/README.md", dest: "packages/adapter-aws-sdk-v3/index.html", title: "@patternmeshjs/aws-sdk-v3" },
+  { src: "packages/streams/README.md", dest: "packages/streams/index.html", title: "@patternmeshjs/streams" },
 ];
 
 function rewriteHref(href) {

@@ -1,7 +1,7 @@
 {
-  "name": "@patternmesh/aws-sdk-v3",
+  "name": "@patternmeshjs/aws-sdk-v3",
   "version": "0.9.0",
-  "description": "AWS SDK v3 DocumentClient adapter for @patternmesh/core.",
+  "description": "AWS SDK v3 DocumentClient adapter for @patternmeshjs/core.",
   "license": "Apache-2.0",
   "author": "patternmesh contributors",
   "homepage": "https://github.com/patternmesh/patternmesh/tree/main/packages/adapter-aws-sdk-v3#readme",
@@ -56,7 +56,7 @@
     "vitest": "^2.1.8"
   },
   "dependencies": {
-    "@patternmesh/core": "workspace:*"
+    "@patternmeshjs/core": "workspace:*"
   },
   "engines": {
     "node": ">=18"

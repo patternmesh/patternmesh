@@ -43,7 +43,7 @@ writeFileSync(
       type: "module",
       pnpm: {
         overrides: {
-          "@patternmesh/core": coreTgz,
+          "@patternmeshjs/core": coreTgz,
         },
       },
     },
@@ -70,9 +70,9 @@ writeFileSync(
   `
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { createAwsSdkV3Adapter } from "@patternmesh/aws-sdk-v3";
-import { connect, defineTable, entity, enumType, id, key, number, string } from "@patternmesh/core";
-import { decodeStreamRecord } from "@patternmesh/streams";
+import { createAwsSdkV3Adapter } from "@patternmeshjs/aws-sdk-v3";
+import { connect, defineTable, entity, enumType, id, key, number, string } from "@patternmeshjs/core";
+import { decodeStreamRecord } from "@patternmeshjs/streams";
 
 const AppTable = defineTable({
   name: "app",

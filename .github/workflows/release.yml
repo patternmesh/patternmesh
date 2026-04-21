@@ -73,8 +73,6 @@ jobs:
           commit: "Release packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # No NPM_TOKEN: publishing uses npm Trusted Publishing via OIDC.
-          # Configure the trusted publisher for the @patternmesh org on npmjs.com
-          # pointing at this repo + this workflow filename. The `id-token: write`
-          # permission above is what lets npm exchange a short-lived token
-          # at publish time and attach provenance attestations.
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Provenance attestations still come from GitHub OIDC (`id-token: write`
+          # above) even though auth is done with NPM_TOKEN.

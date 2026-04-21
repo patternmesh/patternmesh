@@ -29,7 +29,7 @@ import type {
   TransactGetItemsOutput,
   TransactWriteItemsInput,
   UpdateItemInput,
-} from "@patternmesh/core";
+} from "@patternmeshjs/core";
 
 function nonEmptyRecord<T extends Record<string, unknown> | undefined>(value: T): T | undefined {
   if (!value) return undefined;
@@ -81,7 +81,7 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
       );
       return {
         attributes: out.Attributes as Record<string, unknown> | undefined,
-        consumedCapacity: out.ConsumedCapacity as import("@patternmesh/core").ConsumedCapacity | undefined,
+        consumedCapacity: out.ConsumedCapacity as import("@patternmeshjs/core").ConsumedCapacity | undefined,
       };
     },
 
@@ -107,7 +107,7 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
         items: (out.Items ?? []) as Record<string, unknown>[],
         lastEvaluatedKey: out.LastEvaluatedKey as Record<string, unknown> | undefined,
         count: out.Count,
-        consumedCapacity: out.ConsumedCapacity as import("@patternmesh/core").ConsumedCapacity | undefined,
+        consumedCapacity: out.ConsumedCapacity as import("@patternmeshjs/core").ConsumedCapacity | undefined,
       };
     },
 
@@ -131,7 +131,7 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
       return {
         items: (out.Items ?? []) as Record<string, unknown>[],
         lastEvaluatedKey: out.LastEvaluatedKey as Record<string, unknown> | undefined,
-        consumedCapacity: out.ConsumedCapacity as import("@patternmesh/core").ConsumedCapacity | undefined,
+        consumedCapacity: out.ConsumedCapacity as import("@patternmeshjs/core").ConsumedCapacity | undefined,
       };
     },
 
@@ -170,7 +170,7 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
       return {
         items,
         unprocessedKeys: unprocessed,
-        consumedCapacity: out.ConsumedCapacity as import("@patternmesh/core").ConsumedCapacity[] | undefined,
+        consumedCapacity: out.ConsumedCapacity as import("@patternmeshjs/core").ConsumedCapacity[] | undefined,
       };
     },
 
@@ -212,8 +212,8 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
       const rawUn = out.UnprocessedItems?.[tableName] as
         | { PutRequest?: { Item?: Record<string, unknown> }; DeleteRequest?: { Key?: Record<string, unknown> } }[]
         | undefined;
-      const unprocessedPuts: import("@patternmesh/core").BatchWritePut[] = [];
-      const unprocessedDeletes: import("@patternmesh/core").BatchWriteDelete[] = [];
+      const unprocessedPuts: import("@patternmeshjs/core").BatchWritePut[] = [];
+      const unprocessedDeletes: import("@patternmeshjs/core").BatchWriteDelete[] = [];
       for (const u of rawUn ?? []) {
         if (u.PutRequest?.Item) {
           unprocessedPuts.push({ tableName, item: u.PutRequest.Item });
@@ -225,7 +225,7 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
       return {
         unprocessedPuts,
         unprocessedDeletes,
-        consumedCapacity: out.ConsumedCapacity as import("@patternmesh/core").ConsumedCapacity[] | undefined,
+        consumedCapacity: out.ConsumedCapacity as import("@patternmeshjs/core").ConsumedCapacity[] | undefined,
       };
     },
 
@@ -249,7 +249,7 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
       const responses = (raw.Responses ?? []).map((r) => r.Item ?? null);
       return {
         responses,
-        consumedCapacity: (out as { ConsumedCapacity?: import("@patternmesh/core").ConsumedCapacity[] }).ConsumedCapacity,
+        consumedCapacity: (out as { ConsumedCapacity?: import("@patternmeshjs/core").ConsumedCapacity[] }).ConsumedCapacity,
       };
     },
 
@@ -310,4 +310,4 @@ export function createAwsSdkV3Adapter(docClient: DynamoDBDocumentClient): Dynamo
   };
 }
 
-export type { DynamoAdapter } from "@patternmesh/core";
+export type { DynamoAdapter } from "@patternmeshjs/core";

@@ -164,7 +164,7 @@ partition.
 > constraints to hit unintentionally in single-table designs with
 > high-cardinality children under one partition key.
 
-**Library status:** `@patternmesh/core` supports **LSI declarations** on
+**Library status:** `@patternmeshjs/core` supports **LSI declarations** on
 `defineTable` and explicit Query/Scan routing by access pattern (`indexName`).
 Routing remains access-pattern disciplined: no ambiguous automatic route
 selection.
@@ -204,7 +204,7 @@ Mitigations (all are **design** choices, not framework magic):
 - **Avoid unbounded monolithic partitions** — cap list growth; paginate;
   archive to S3 + metadata row.
 
-`@patternmesh/core` does not auto-shard; it helps you **keep keys explicit**
+`@patternmeshjs/core` does not auto-shard; it helps you **keep keys explicit**
 in `keys()` and access patterns so you can reason about hotspots.
 
 ---

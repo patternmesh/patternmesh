@@ -1,5 +1,5 @@
 {
-  "name": "@patternmesh/core",
+  "name": "@patternmeshjs/core",
   "version": "0.9.0",
   "description": "TypeScript-first DynamoDB modeling: logical entities, hidden keys, explicit access patterns, and typed repositories for single-table design.",
   "license": "Apache-2.0",

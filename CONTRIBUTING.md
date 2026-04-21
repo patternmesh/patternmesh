@@ -31,7 +31,7 @@ Local. Start it with the provided compose file:
 ```bash
 docker compose up -d
 export DYNAMODB_ENDPOINT=http://localhost:8000
-pnpm --filter @patternmesh/aws-sdk-v3 test
+pnpm --filter @patternmeshjs/aws-sdk-v3 test
 ```
 
 Tests are automatically skipped when `DYNAMODB_ENDPOINT` is unset.
@@ -40,9 +40,9 @@ Tests are automatically skipped when `DYNAMODB_ENDPOINT` is unset.
 
 ```
 packages/
-  core/                  # @patternmesh/core — modeling DSL, repositories, transactions
-  adapter-aws-sdk-v3/    # @patternmesh/aws-sdk-v3 — DocumentClient adapter
-  streams/               # @patternmesh/streams — typed stream decoding
+  core/                  # @patternmeshjs/core — modeling DSL, repositories, transactions
+  adapter-aws-sdk-v3/    # @patternmeshjs/aws-sdk-v3 — DocumentClient adapter
+  streams/               # @patternmeshjs/streams — typed stream decoding
 docs/
   single-table-patterns.md  # conceptual design guidance
   table-setup.md            # provisioning guide
@@ -153,7 +153,7 @@ during release. For example:
 
 ```
 Reject reserved attribute names at defineEntity
-Add isTtlRemove helper to @patternmesh/streams
+Add isTtlRemove helper to @patternmeshjs/streams
 Fix batchGet reconciliation to be O(n)
 ```
 

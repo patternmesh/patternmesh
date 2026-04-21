@@ -6,5 +6,5 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ["@aws-sdk/client-dynamodb", "@aws-sdk/lib-dynamodb", "@patternmesh/core"],
+  external: ["@aws-sdk/client-dynamodb", "@aws-sdk/lib-dynamodb", "@patternmeshjs/core"],
 });

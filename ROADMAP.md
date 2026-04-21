@@ -11,7 +11,7 @@ delivery windows. For what has shipped, see [CHANGELOG.md](./CHANGELOG.md).
 - **v0.5 – v0.6:** relations DSL, read bundles, orchestration primitive.
 - **v0.7:** complex attribute types (`object`, `list`, `stringSet`,
   `numberSet`, `json`, `pathRef`).
-- **v0.8:** `@patternmesh/streams` package, `ttl()` field, lifecycle recipes
+- **v0.8:** `@patternmeshjs/streams` package, `ttl()` field, lifecycle recipes
   (`softDelete`, `archive`).
 
 ## In progress — v0.9 (first OSS release)
@@ -36,11 +36,11 @@ delivery windows. For what has shipped, see [CHANGELOG.md](./CHANGELOG.md).
 - **DynamoDB Local helpers**: schema-from-`defineTable` create-table helper
   to reduce onboarding friction.
 - **Observability hooks**: typed `on*` callbacks for decode / unknown-entity
-  / view-type-mismatch in `@patternmesh/streams`.
-- **Validation interop**: optional `@patternmesh/zod` (or Valibot) package
+  / view-type-mismatch in `@patternmeshjs/streams`.
+- **Validation interop**: optional `@patternmeshjs/zod` (or Valibot) package
   aligning runtime validation with inferred types.
 - **Cursor signing**: HMAC-signed opaque cursors for untrusted boundaries.
-- **`@patternmesh/kinesis`**: parallel package for Kinesis Data Streams
+- **`@patternmeshjs/kinesis`**: parallel package for Kinesis Data Streams
   consumers.
 - **Shard polling**: direct `GetRecords` helpers for non-Lambda consumers.
 

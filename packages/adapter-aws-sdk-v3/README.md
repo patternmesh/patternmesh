@@ -1,6 +1,6 @@
-# @patternmesh/aws-sdk-v3
+# @patternmeshjs/aws-sdk-v3
 
-AWS SDK v3 adapter for `@patternmesh/core`.
+AWS SDK v3 adapter for `@patternmeshjs/core`.
 
 It turns a `DynamoDBDocumentClient` into the `DynamoAdapter` interface used by
 patternmesh repositories and transaction services.
@@ -8,7 +8,7 @@ patternmesh repositories and transaction services.
 ## Install
 
 ```bash
-pnpm add @patternmesh/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+pnpm add @patternmeshjs/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ pnpm add @patternmesh/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
 ```ts
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { createAwsSdkV3Adapter } from "@patternmesh/aws-sdk-v3";
+import { createAwsSdkV3Adapter } from "@patternmeshjs/aws-sdk-v3";
 
 const base = new DynamoDBClient({ region: "us-east-1" });
 const doc = DynamoDBDocumentClient.from(base);
@@ -37,7 +37,7 @@ const adapter = createAwsSdkV3Adapter(doc);
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { NodeHttpHandler } from "@smithy/node-http-handler";
-import { createAwsSdkV3Adapter } from "@patternmesh/aws-sdk-v3";
+import { createAwsSdkV3Adapter } from "@patternmeshjs/aws-sdk-v3";
 
 const base = new DynamoDBClient({
   region: "us-east-1",
@@ -75,7 +75,7 @@ An empty batch write now throws instead of silently succeeding.
 docker compose up -d dynamodb-local
 export DYNAMODB_ENDPOINT=http://localhost:8000
 pnpm build
-pnpm --filter @patternmesh/aws-sdk-v3 test
+pnpm --filter @patternmeshjs/aws-sdk-v3 test
 ```
 
 Without `DYNAMODB_ENDPOINT`, Local integration tests are skipped.

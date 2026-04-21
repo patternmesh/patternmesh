@@ -41,7 +41,7 @@ importers:
 
   packages/adapter-aws-sdk-v3:
     dependencies:
-      '@patternmesh/core':
+      '@patternmeshjs/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

@@ -40,7 +40,7 @@ Published packages are intended to use npm provenance via GitHub Actions OIDC.
 Once release automation is active, you can verify provenance with:
 
 ```bash
-npm audit signatures @patternmesh/core
-npm audit signatures @patternmesh/aws-sdk-v3
-npm audit signatures @patternmesh/streams
+npm audit signatures @patternmeshjs/core
+npm audit signatures @patternmeshjs/aws-sdk-v3
+npm audit signatures @patternmeshjs/streams
 ```

@@ -15,21 +15,21 @@ explainable compiled operations.
 
 | Package | Purpose |
 | --- | --- |
-| [`@patternmesh/core`](packages/core/README.md) | schema DSL, repositories, access patterns, transactions, relations |
-| [`@patternmesh/aws-sdk-v3`](packages/adapter-aws-sdk-v3/README.md) | AWS DocumentClient adapter |
-| [`@patternmesh/streams`](packages/streams/README.md) | typed stream decoding and routing |
+| [`@patternmeshjs/core`](packages/core/README.md) | schema DSL, repositories, access patterns, transactions, relations |
+| [`@patternmeshjs/aws-sdk-v3`](packages/adapter-aws-sdk-v3/README.md) | AWS DocumentClient adapter |
+| [`@patternmeshjs/streams`](packages/streams/README.md) | typed stream decoding and routing |
 
 ## Install
 
 ```bash
-pnpm add @patternmesh/core @patternmesh/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+pnpm add @patternmeshjs/core @patternmeshjs/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
 ```
 
 Also supported:
 
 ```bash
-npm install @patternmesh/core @patternmesh/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
-yarn add @patternmesh/core @patternmesh/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+npm install @patternmeshjs/core @patternmeshjs/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+yarn add @patternmeshjs/core @patternmeshjs/aws-sdk-v3 @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
 ```
 
 Requirements:
@@ -48,8 +48,8 @@ preserves branded ID aliases, pass those typed values at your boundaries.
 ```ts
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { createAwsSdkV3Adapter } from "@patternmesh/aws-sdk-v3";
-import { connect, defineTable, entity, id, key, string } from "@patternmesh/core";
+import { createAwsSdkV3Adapter } from "@patternmeshjs/aws-sdk-v3";
+import { connect, defineTable, entity, id, key, string } from "@patternmeshjs/core";
 
 const AppTable = defineTable({
   name: "app",
@@ -157,11 +157,11 @@ See also: [docs/guides/relations.md](docs/guides/relations.md) for the full
 
 ### Streams and TTL
 
-`@patternmesh/streams` decodes DynamoDB stream records into entity-aware logical
+`@patternmeshjs/streams` decodes DynamoDB stream records into entity-aware logical
 items; it is **not** a stream processing framework.
 
 ```ts
-import { decodeStreamEvent, isTtlRemove } from "@patternmesh/streams";
+import { decodeStreamEvent, isTtlRemove } from "@patternmeshjs/streams";
 
 const decoded = decodeStreamEvent(event, {
   decoders: { User: (item) => item },
@@ -248,7 +248,7 @@ pnpm typecheck
 ```bash
 docker compose up -d dynamodb-local
 export DYNAMODB_ENDPOINT=http://localhost:8000
-pnpm --filter @patternmesh/aws-sdk-v3 test
+pnpm --filter @patternmeshjs/aws-sdk-v3 test
 ```
 
 Without `DYNAMODB_ENDPOINT`, adapter integration tests are skipped.

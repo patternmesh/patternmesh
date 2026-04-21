@@ -2,7 +2,7 @@
 
 ## What it is
 
-`@patternmesh/streams` turns DynamoDB Stream records into typed,
+`@patternmeshjs/streams` turns DynamoDB Stream records into typed,
 entity-aware events. It is intentionally small: decode, route, and surface
 typed errors. It does **not** poll shards, manage checkpoints, or wrap any
 runtime.
@@ -28,7 +28,7 @@ import {
   StreamDecodeError,
   StreamViewTypeError,
   UnknownEntityError,
-} from "@patternmesh/streams";
+} from "@patternmeshjs/streams";
 ```
 
 ## Multi-entity router

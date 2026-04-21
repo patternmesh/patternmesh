@@ -3,5 +3,5 @@
   "out": "docs/api/streams",
   "tsconfig": "packages/streams/tsconfig.json",
   "readme": "packages/streams/README.md",
-  "name": "@patternmesh/streams"
+  "name": "@patternmeshjs/streams"
 }

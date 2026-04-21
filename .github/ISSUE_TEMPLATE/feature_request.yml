@@ -8,7 +8,7 @@ body:
     id: package
     attributes:
       label: Related package
-      placeholder: "@patternmesh/core"
+      placeholder: "@patternmeshjs/core"
   - type: textarea
     id: problem
     attributes:

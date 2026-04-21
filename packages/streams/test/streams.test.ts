@@ -15,7 +15,7 @@ function record(base: Partial<DynamoDBRecord>): DynamoDBRecord {
   } as DynamoDBRecord;
 }
 
-describe("@patternmesh/streams", () => {
+describe("@patternmeshjs/streams", () => {
   it("decodes new and old images with entity routing", () => {
     const r = record({
       eventName: "MODIFY",

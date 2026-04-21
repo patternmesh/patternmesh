@@ -12,7 +12,7 @@ body:
     id: package
     attributes:
       label: Affected package
-      placeholder: "@patternmesh/core"
+      placeholder: "@patternmeshjs/core"
     validations:
       required: true
   - type: input

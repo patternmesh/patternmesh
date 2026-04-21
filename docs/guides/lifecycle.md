@@ -32,7 +32,7 @@ import {
   number,
   string,
   ttl,
-} from "@patternmesh/core";
+} from "@patternmeshjs/core";
 
 const AppTable = defineTable({
   name: "app",

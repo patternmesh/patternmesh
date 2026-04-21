@@ -1,4 +1,4 @@
-# @patternmesh/core
+# @patternmeshjs/core
 
 The core modeling package for patternmesh.
 
@@ -14,7 +14,7 @@ It provides:
 ## Install
 
 ```bash
-pnpm add @patternmesh/core
+pnpm add @patternmeshjs/core
 ```
 
 Requirements:

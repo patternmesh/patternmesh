@@ -20,7 +20,7 @@ import {
   string,
   stringSet,
   ValidationError,
-} from "@patternmesh/core";
+} from "@patternmeshjs/core";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createAwsSdkV3Adapter } from "../src/index.js";
 
