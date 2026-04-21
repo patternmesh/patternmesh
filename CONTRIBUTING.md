@@ -146,6 +146,35 @@ Caveats:
    `minor`, or `major`). Commit the generated file alongside your change.
 7. **Open a pull request** against `main`. Fill in the PR template.
 
+### Changeset guidance
+
+**Add a changeset when you change anything that a downstream consumer can
+observe.** That includes public type signatures, runtime behavior, exported
+errors, package metadata (entry points, engines, `peerDependencies`), or the
+rendered shape of query/update plans returned by `explain.*`.
+
+**Skip the changeset for:**
+
+- documentation-only edits (`README.md`, `docs/**`, JSDoc/TSDoc, code comments)
+- internal refactors that do not affect any exported symbol
+- test-only changes
+- CI, tooling, or repo-hygiene changes that consumers cannot see
+
+If you are unsure, add one — an extra CHANGELOG entry is cheaper than a silent
+behavior change.
+
+**Bump type mapping for this repo:**
+
+| Bump    | Use when                                                                            |
+| ------- | ----------------------------------------------------------------------------------- |
+| `patch` | bug fix with no API surface change; more permissive types; improved error messages  |
+| `minor` | new exported symbol; additive type widening; new entity/relation/recipe feature     |
+| `major` | removed or renamed export; narrowed types; changed runtime semantics of existing API|
+
+While we are on `0.x`, breaking changes are allowed in minor bumps per SemVer
+convention, but we still tag them as `major` in changesets so the CHANGELOG
+flags them clearly. Once we cut `1.0.0`, `major` will track SemVer strictly.
+
 ## Commit messages
 
 We do not mandate a strict convention, but clear, imperative subjects help
