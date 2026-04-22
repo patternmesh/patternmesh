@@ -52,11 +52,6 @@ function skMatches(
 }
 
 function resolveSkAttr(input: QueryInput): string | undefined {
-  const firstCond = input.keyConditionExpression.split(" AND ")[0] ?? "";
-  let pkAttr = (firstCond.split(" = ")[0] ?? "pk").trim();
-  if (pkAttr.startsWith("#")) {
-    pkAttr = input.expressionAttributeNames[pkAttr] ?? pkAttr;
-  }
   const rest = input.keyConditionExpression.split(" AND ").slice(1);
   for (const clause of rest) {
     if (clause.includes("begins_with(")) {
