@@ -9,6 +9,14 @@ describe("cursor", () => {
   });
 
   it("rejects malformed cursor payloads", () => {
-    expect(() => decodeCursor("not-json" as never)).toThrow(ValidationError);
+    const malformed: unknown[] = [
+      "not-json",
+      Buffer.from("[]", "utf8").toString("base64url"),
+      Buffer.from("null", "utf8").toString("base64url"),
+      Buffer.from('"str"', "utf8").toString("base64url"),
+    ];
+    for (const value of malformed) {
+      expect(() => decodeCursor(value as never)).toThrow(ValidationError);
+    }
   });
 });

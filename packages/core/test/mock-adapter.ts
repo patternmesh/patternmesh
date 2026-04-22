@@ -115,7 +115,13 @@ function applyMockUpdateFromTransact(
   }
 }
 
-/** In-memory mock assuming base-table keys `pk` and `sk` (matches typical defineTable examples). */
+/**
+ * In-memory mock assuming base-table keys `pk` and `sk` (matches typical defineTable examples).
+ *
+ * This test double intentionally models only the subset needed by core unit tests.
+ * For exact DynamoDB behavior (condition expression evaluation, full update semantics,
+ * cancellation reasons), use the adapter DynamoDB Local integration suites.
+ */
 export function createMemoryAdapter(): DynamoAdapter & {
   allItems(table: string): Record<string, unknown>[];
 } {

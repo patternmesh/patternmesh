@@ -1,0 +1,114 @@
+name: validate
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version to use
+        required: true
+        type: string
+      run-static-checks:
+        description: Run format/lint/typecheck/publishability checks
+        required: false
+        default: true
+        type: boolean
+      turbo-cache-key-suffix:
+        description: Cache key suffix to scope turbo cache
+        required: true
+        type: string
+      coverage-artifact-name:
+        description: Artifact name for LCOV upload
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: ./.github/actions/setup
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ inputs.turbo-cache-key-suffix }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-${{ inputs.turbo-cache-key-suffix }}-
+            turbo-${{ runner.os }}-
+
+      - name: Start DynamoDB Local
+        run: docker compose up -d dynamodb-local
+
+      - name: Export DynamoDB endpoint
+        run: echo "DYNAMODB_ENDPOINT=http://localhost:8000" >> "$GITHUB_ENV"
+
+      - name: Wait for DynamoDB Local
+        run: |
+          for i in {1..30}; do
+            if (echo > /dev/tcp/localhost/8000) >/dev/null 2>&1; then
+              if curl -s -o /dev/null -w "%{http_code}" --max-time 2 http://localhost:8000 | grep -qE '^[1-5][0-9]{2}$'; then
+                echo "DynamoDB Local is accepting HTTP after ${i} attempts"
+                exit 0
+              fi
+            fi
+            sleep 2
+          done
+          echo "DynamoDB Local did not become ready in time"
+          docker compose logs dynamodb-local || true
+          exit 1
+
+      - name: Build
+        timeout-minutes: 10
+        run: pnpm build
+
+      - name: Generate API docs
+        run: pnpm docs:api
+
+      - name: Test + coverage
+        timeout-minutes: 15
+        run: pnpm test:coverage
+
+      - name: Upload LCOV artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.coverage-artifact-name }}
+          path: |
+            packages/core/coverage/lcov.info
+            packages/adapter-aws-sdk-v3/coverage/lcov.info
+            packages/streams/coverage/lcov.info
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Format check
+        if: ${{ inputs.run-static-checks }}
+        run: pnpm format:check
+
+      - name: Lint
+        if: ${{ inputs.run-static-checks }}
+        run: pnpm lint
+
+      - name: Syncpack lint
+        if: ${{ inputs.run-static-checks }}
+        run: pnpm syncpack lint
+
+      - name: Typecheck
+        if: ${{ inputs.run-static-checks }}
+        run: pnpm typecheck
+
+      - name: publint
+        if: ${{ inputs.run-static-checks }}
+        run: pnpm publint
+
+      - name: Are the Types Wrong
+        if: ${{ inputs.run-static-checks }}
+        run: pnpm attw
+
+      - name: Smoke test tarballs
+        if: ${{ inputs.run-static-checks }}
+        run: pnpm smoke:pack

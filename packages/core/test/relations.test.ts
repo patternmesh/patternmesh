@@ -28,6 +28,10 @@ type FolderParentInput = { parentId?: string | null };
 type FolderParentPageInput = { parentId?: string | null; cursor?: string; limit?: number };
 type MembershipItem = { orgId: string; userId: string; role: "owner" | "admin" | "member" };
 
+function asRelation<T>(value: unknown): T {
+  return value as T;
+}
+
 const Org = entity("Org", {
   orgId: id("org").required(),
   name: string().required(),
@@ -160,34 +164,26 @@ describe("relations DSL and namespaces", () => {
     await db.Org.create({ orgId: "org_1" as never, name: "Acme" });
     await db.User.create({ userId: "usr_1" as never, email: "u1@example.com" });
 
-    await (
-      db.Org as unknown as {
-        members: { add: (input: Record<string, unknown>) => Promise<unknown> };
-      }
+    await asRelation<{ members: { add: (input: Record<string, unknown>) => Promise<unknown> } }>(
+      db.Org,
     ).members.add({
       orgId: "org_1" as never,
       userId: "usr_1" as never,
       role: "admin",
     });
-    const orgMembers = await (
-      db.Org as unknown as {
-        members: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> };
-      }
-    ).members.list({ orgId: "org_1" as never });
+    const orgMembers = await asRelation<{
+      members: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> };
+    }>(db.Org).members.list({ orgId: "org_1" as never });
     expect(orgMembers.items.length).toBe(1);
-    const userOrgs = await (
-      db.User as unknown as {
-        orgs: {
-          listTargets: (input: Record<string, unknown>) => Promise<Record<string, unknown>[]>;
-        };
-      }
-    ).orgs.listTargets({ userId: "usr_1" as never });
+    const userOrgs = await asRelation<{
+      orgs: {
+        listTargets: (input: Record<string, unknown>) => Promise<Record<string, unknown>[]>;
+      };
+    }>(db.User).orgs.listTargets({ userId: "usr_1" as never });
     expect(userOrgs[0]).toMatchObject({ orgId: "org_1", name: "Acme" });
-    const admins = await (
-      db.Org as unknown as {
-        admins: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> };
-      }
-    ).admins.list({ orgId: "org_1" as never });
+    const admins = await asRelation<{
+      admins: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> };
+    }>(db.Org).admins.list({ orgId: "org_1" as never });
     expect(admins.items.length).toBe(1);
 
     const m = (await db.Membership.find.byOrg({ orgId: "org_1" as never })) as { items: unknown[] };
