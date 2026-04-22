@@ -7,6 +7,11 @@ on:
         description: Node.js version to use
         required: true
         type: string
+      run-static-checks:
+        description: Run format/lint/typecheck/publishability checks
+        required: false
+        default: true
+        type: boolean
       turbo-cache-key-suffix:
         description: Cache key suffix to scope turbo cache
         required: true
@@ -81,22 +86,29 @@ jobs:
           retention-days: 14
 
       - name: Format check
+        if: ${{ inputs.run-static-checks }}
         run: pnpm format:check
 
       - name: Lint
+        if: ${{ inputs.run-static-checks }}
         run: pnpm lint
 
       - name: Syncpack lint
+        if: ${{ inputs.run-static-checks }}
         run: pnpm syncpack lint
 
       - name: Typecheck
+        if: ${{ inputs.run-static-checks }}
         run: pnpm typecheck
 
       - name: publint
+        if: ${{ inputs.run-static-checks }}
         run: pnpm publint
 
       - name: Are the Types Wrong
+        if: ${{ inputs.run-static-checks }}
         run: pnpm attw
 
       - name: Smoke test tarballs
+        if: ${{ inputs.run-static-checks }}
         run: pnpm smoke:pack

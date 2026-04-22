@@ -19,6 +19,7 @@ jobs:
     uses: ./.github/workflows/validate.yml
     with:
       node-version: "${{ matrix.node }}"
+      run-static-checks: ${{ matrix.node == 20 }}
       turbo-cache-key-suffix: "${{ matrix.node }}"
       coverage-artifact-name: "coverage-lcov-node-${{ matrix.node }}"
 
