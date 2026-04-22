@@ -1,5 +1,8 @@
 # Release Checklist
 
+Short pre-publish gate list. The full release workflow and rationale live in
+[docs/dev/releasing.md](./docs/dev/releasing.md).
+
 Use this checklist before publishing any release from this monorepo.
 
 ## Metadata

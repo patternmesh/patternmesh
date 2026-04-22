@@ -49,7 +49,7 @@ Requirements:
 - **TypeScript 5.7+**
 - **ESM-only**
 - a DynamoDB table that already exists and matches your `defineTable(...)`
-  declaration — see [docs/table-setup.md](docs/table-setup.md)
+  declaration — see [docs/design/table-setup.md](docs/design/table-setup.md)
 
 Examples below use plain strings for IDs for readability. If your application
 preserves branded ID aliases, pass those typed values at your boundaries.
@@ -219,9 +219,19 @@ Pages: **<https://patternmesh.github.io/patternmesh/>**.
 
 ### Design and setup
 
-- [Single-table design guide](docs/single-table-patterns.md)
-- [Table setup guide](docs/table-setup.md)
-- [API reference generation](docs/API_REFERENCE.md)
+- [Single-table design guide](docs/design/single-table-patterns.md)
+- [Table setup guide](docs/design/table-setup.md)
+- [API reference generation](docs/design/api-reference.md)
+
+### Contributor docs
+
+For working **on** the repo rather than with the packages:
+
+- [Dev docs index](docs/dev/README.md)
+- [Repo architecture](docs/dev/repo-architecture.md) — workspace topology,
+  package boundaries, design principles
+- [Validation boundary](docs/dev/validation-boundary.md) — compiler-first,
+  Zod-optional architecture target
 
 ### Project
 

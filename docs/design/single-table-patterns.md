@@ -2,8 +2,8 @@
 
 This document is **conceptual guidance** for modeling on **one DynamoDB table**
 with logical entities and explicit access patterns. It complements the runnable
-snippets in the [root README](../README.md) and the code-heavy cookbooks under
-[docs/guides/](./guides/). DynamoDB behavior is authoritative; when in doubt,
+snippets in the [root README](../../README.md) and the code-heavy cookbooks under
+[docs/guides/](../guides/). DynamoDB behavior is authoritative; when in doubt,
 see the
 [AWS DynamoDB Developer Guide](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html).
 
@@ -87,8 +87,8 @@ path per pattern name. Orchestrating "load parent then N children" is still
 **application composition**; patternmesh also provides explicit relation
 helpers, read bundles, and write recipes when you want named, bounded
 composition surfaces. See
-[docs/guides/relations.md](./guides/relations.md) and
-[docs/guides/bundles-and-recipes.md](./guides/bundles-and-recipes.md).
+[docs/guides/relations.md](../guides/relations.md) and
+[docs/guides/bundles-and-recipes.md](../guides/bundles-and-recipes.md).
 
 ---
 
@@ -105,7 +105,7 @@ Typical approaches:
 Both require **explicit** key and GSI design. The framework does not infer
 relationships; it enforces that each **declared** pattern compiles to a valid
 Dynamo request. A worked many-to-many example lives in
-[docs/guides/relations.md](./guides/relations.md).
+[docs/guides/relations.md](../guides/relations.md).
 
 ---
 
@@ -303,7 +303,7 @@ Operational notes:
   used as a substitute for explicit access patterns.
 
 For builder-level examples and nested update patterns, see
-[docs/guides/complex-attributes.md](./guides/complex-attributes.md).
+[docs/guides/complex-attributes.md](../guides/complex-attributes.md).
 
 ---
 
@@ -326,9 +326,9 @@ Design notes (runnable examples live in the topic guides):
 
 Code-heavy walkthroughs:
 
-- [docs/guides/lifecycle.md](./guides/lifecycle.md) for soft delete and archive
+- [docs/guides/lifecycle.md](../guides/lifecycle.md) for soft delete and archive
   recipes.
-- [docs/guides/streams-advanced.md](./guides/streams-advanced.md) for decode,
+- [docs/guides/streams-advanced.md](../guides/streams-advanced.md) for decode,
   routing, and TTL-aware handling.
 
 ---
@@ -336,7 +336,7 @@ Code-heavy walkthroughs:
 ## 14. Where to look next
 
 - **Access-pattern and key design**: stay on this page.
-- **Runnable end-to-end flows**: [docs/guides/](./guides/).
+- **Runnable end-to-end flows**: [docs/guides/](../guides/).
 - **API contracts (batch sizes, errors, `explain`)**:
-  [packages/core/README.md](../packages/core/README.md).
-- **Table provisioning**: [docs/table-setup.md](./table-setup.md).
+  [packages/core/README.md](../../packages/core/README.md).
+- **Table provisioning**: [docs/design/table-setup.md](./table-setup.md).

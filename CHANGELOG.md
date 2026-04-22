@@ -122,7 +122,7 @@ for these versions.
 - **Lifecycle recipes**: `db.lifecycle.softDelete` (in-place tombstone) and
   `db.lifecycle.archive` (copy to archive entity) built on the orchestration
   primitive.
-- **TTL and lifecycle patterns** section in `docs/single-table-patterns.md`.
+- **TTL and lifecycle patterns** section in `docs/design/single-table-patterns.md`.
 
 ### v0.7 milestone
 

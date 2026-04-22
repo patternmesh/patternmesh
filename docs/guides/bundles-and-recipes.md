@@ -170,5 +170,5 @@ for (const step of recipePlan.steps) {
   aliases a bundle can step through.
 - [docs/guides/lifecycle.md](./lifecycle.md) for soft-delete and archive
   recipes built on the same orchestration primitive.
-- [docs/single-table-patterns.md](../single-table-patterns.md) for the design
-  principles that motivate "declared-only" orchestration.
+- [docs/design/single-table-patterns.md](../design/single-table-patterns.md) for
+  the design principles that motivate "declared-only" orchestration.

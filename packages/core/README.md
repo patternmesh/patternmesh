@@ -236,8 +236,8 @@ Each repository exposes:
 ## Related docs
 
 - [Repository root README](../../README.md)
-- [Single-table design guide](../../docs/single-table-patterns.md)
-- [Table setup guide](../../docs/table-setup.md)
+- [Single-table design guide](../../docs/design/single-table-patterns.md)
+- [Table setup guide](../../docs/design/table-setup.md)
 
 ### Topic cookbooks
 

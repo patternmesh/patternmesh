@@ -16,7 +16,7 @@ helpers that drive targeted updates into them:
 
 Use these when the data is bounded and read with its parent. Prefer child
 items when data is independently queried or high-churn (see
-[docs/single-table-patterns.md §12.1](../single-table-patterns.md)).
+[docs/design/single-table-patterns.md §12.1](../design/single-table-patterns.md)).
 
 ## Prerequisites
 
@@ -182,5 +182,5 @@ For an Org / User / Membership style many-to-many, see
   access patterns.
 - [docs/guides/lifecycle.md](./lifecycle.md) for TTL and archive patterns
   that often pair with nested attributes.
-- [docs/single-table-patterns.md §12.1](../single-table-patterns.md) for the
-  embed-vs-child decision guidance in prose.
+- [docs/design/single-table-patterns.md §12.1](../design/single-table-patterns.md)
+  for the embed-vs-child decision guidance in prose.

@@ -23,12 +23,62 @@ const pages = [
   { src: "CODE_OF_CONDUCT.md", dest: "CODE_OF_CONDUCT.html", title: "Code of Conduct" },
   { src: "RELEASE_CHECKLIST.md", dest: "RELEASE_CHECKLIST.html", title: "Release checklist" },
   {
-    src: "docs/single-table-patterns.md",
-    dest: "docs/single-table-patterns.html",
+    src: "docs/design/single-table-patterns.md",
+    dest: "docs/design/single-table-patterns.html",
     title: "Single-table design",
   },
-  { src: "docs/table-setup.md", dest: "docs/table-setup.html", title: "Table setup" },
-  { src: "docs/API_REFERENCE.md", dest: "docs/API_REFERENCE.html", title: "API reference" },
+  {
+    src: "docs/design/table-setup.md",
+    dest: "docs/design/table-setup.html",
+    title: "Table setup",
+  },
+  {
+    src: "docs/design/api-reference.md",
+    dest: "docs/design/api-reference.html",
+    title: "API reference",
+  },
+  { src: "docs/dev/README.md", dest: "docs/dev/index.html", title: "Dev docs" },
+  {
+    src: "docs/dev/local-setup.md",
+    dest: "docs/dev/local-setup.html",
+    title: "Local setup",
+  },
+  {
+    src: "docs/dev/repo-architecture.md",
+    dest: "docs/dev/repo-architecture.html",
+    title: "Repo architecture",
+  },
+  { src: "docs/dev/testing.md", dest: "docs/dev/testing.html", title: "Testing" },
+  {
+    src: "docs/dev/releasing.md",
+    dest: "docs/dev/releasing.html",
+    title: "Releasing",
+  },
+  {
+    src: "docs/dev/docs-site.md",
+    dest: "docs/dev/docs-site.html",
+    title: "Docs site",
+  },
+  {
+    src: "docs/dev/adding-a-feature.md",
+    dest: "docs/dev/adding-a-feature.html",
+    title: "Adding a feature",
+  },
+  {
+    src: "docs/dev/adding-a-package.md",
+    dest: "docs/dev/adding-a-package.html",
+    title: "Adding a package",
+  },
+  {
+    src: "docs/dev/adapter-contracts.md",
+    dest: "docs/dev/adapter-contracts.html",
+    title: "Adapter contracts",
+  },
+  {
+    src: "docs/dev/validation-boundary.md",
+    dest: "docs/dev/validation-boundary.html",
+    title: "Validation boundary",
+  },
   {
     src: "docs/guides/relations.md",
     dest: "docs/guides/relations.html",

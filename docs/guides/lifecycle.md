@@ -202,5 +202,5 @@ await db.orchestrate.write(
   delete, archive, and TTL removals look on the stream.
 - [docs/guides/bundles-and-recipes.md](./bundles-and-recipes.md) for the
   declarative recipe surface that can express the same flows.
-- [docs/single-table-patterns.md](../single-table-patterns.md) for the design
-  rationale behind explicit recipes over implicit hooks.
+- [docs/design/single-table-patterns.md](../design/single-table-patterns.md) for
+  the design rationale behind explicit recipes over implicit hooks.

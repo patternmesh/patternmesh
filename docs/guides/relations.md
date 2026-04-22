@@ -176,5 +176,5 @@ const parentOrg = edge ? await db.Membership.org.get({ orgId: edge.orgId }) : nu
 
 - [docs/guides/bundles-and-recipes.md](./bundles-and-recipes.md) for bounded
   cross-entity reads/writes built on relations.
-- [docs/single-table-patterns.md](../single-table-patterns.md) for key-design
-  guidance behind each relation shape.
+- [docs/design/single-table-patterns.md](../design/single-table-patterns.md) for
+  key-design guidance behind each relation shape.
