@@ -26,6 +26,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: ./.github/actions/setup
+        with:
+          node-version: "20"
+
       - uses: changesets/action@v1
         with:
           version: pnpm changeset:version
