@@ -10,6 +10,26 @@ package changelogs may be split out in a future release.
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-04-21
+
+Maintenance release — no public API changes.
+
+### Changed
+
+- **`@patternmeshjs/streams`**: widen `@aws-sdk/util-dynamodb` dependency range
+  to `^3.996.2`.
+
+### Internal
+
+- Bump toolchain devDependencies: TypeScript `5.9.3`, vitest `2.1.9`,
+  tsup `8.5.1`, `expect-type` `1.3.0`, `@types/aws-lambda` `8.10.161`,
+  `@types/node` `25.6.0`.
+- Bump root tooling: eslint `10.2.1`, `@eslint/js` `10.0.1`,
+  `typescript-eslint` `8.59.0`, typedoc `0.28.19`, publint `0.3.18`,
+  syncpack `14.3.0`, `@changesets/cli` `2.31.0`.
+- Remove dead `pkAttr` parsing in the core `mock-adapter` test helper (flagged
+  by eslint 10's `no-useless-assignment`).
+
 ## [0.9.0] - 2026-04-21
 
 This is the first public open-source release. It includes
@@ -164,5 +184,6 @@ for these versions.
   access patterns, update builder, `explain()` helpers, base64-url cursors.
 - AWS SDK v3 DocumentClient adapter.
 
-[Unreleased]: https://github.com/patternmesh/patternmesh/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/patternmesh/patternmesh/compare/v0.9.1...HEAD
+[0.9.1]: https://github.com/patternmesh/patternmesh/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/patternmesh/patternmesh/releases/tag/v0.9.0
