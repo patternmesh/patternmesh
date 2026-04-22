@@ -1,6 +1,6 @@
 {
   "name": "@patternmeshjs/aws-sdk-v3",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "AWS SDK v3 DocumentClient adapter for @patternmeshjs/core.",
   "license": "Apache-2.0",
   "author": "patternmesh contributors",
