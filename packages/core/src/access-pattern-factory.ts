@@ -45,7 +45,11 @@ function mergeEntityFilter(
   names: Record<string, string>,
   values: Record<string, unknown>,
   kce: string,
-  extra?: { filterExpression?: string; extraNames?: Record<string, string>; extraValues?: Record<string, unknown> },
+  extra?: {
+    filterExpression?: string;
+    extraNames?: Record<string, string>;
+    extraValues?: Record<string, unknown>;
+  },
 ): {
   keyConditionExpression: string;
   expressionAttributeNames: Record<string, string>;
@@ -78,7 +82,11 @@ function mergeEntityFilterForScan(
   discriminatorValue: string,
   names: Record<string, string>,
   values: Record<string, unknown>,
-  extra?: { filterExpression?: string; extraNames?: Record<string, string>; extraValues?: Record<string, unknown> },
+  extra?: {
+    filterExpression?: string;
+    extraNames?: Record<string, string>;
+    extraValues?: Record<string, unknown>;
+  },
 ): {
   expressionAttributeNames: Record<string, string>;
   expressionAttributeValues: Record<string, unknown>;
@@ -156,20 +164,25 @@ function buildSkKeyCondition(
 ): { kceSuffix: string; names: Record<string, string>; values: Record<string, unknown> } {
   const names: Record<string, string> = {};
   const values: Record<string, unknown> = {};
-  const modes = [built.skBeginsWith !== undefined, built.skEq !== undefined, built.skBetween !== undefined].filter(
-    Boolean,
-  ).length;
+  const modes = [
+    built.skBeginsWith !== undefined,
+    built.skEq !== undefined,
+    built.skBetween !== undefined,
+  ].filter(Boolean).length;
   if (modes > 1) {
     throw new ValidationError([
       {
         path: "accessPattern",
-        message: "Specify at most one of skBeginsWith, skEq, or skBetween for the sort key condition",
+        message:
+          "Specify at most one of skBeginsWith, skEq, or skBetween for the sort key condition",
       },
     ]);
   }
   if (built.skBeginsWith !== undefined) {
     if (!skAttr) {
-      throw new ValidationError([{ path: "skBeginsWith", message: "Table or index has no sort key" }]);
+      throw new ValidationError([
+        { path: "skBeginsWith", message: "Table or index has no sort key" },
+      ]);
     }
     values[":skpre"] = built.skBeginsWith;
     return { kceSuffix: ` AND begins_with(${skAttr}, :skpre)`, names, values };
@@ -187,7 +200,9 @@ function buildSkKeyCondition(
     }
     const pair = built.skBetween;
     if (pair.length !== 2) {
-      throw new ValidationError([{ path: "skBetween", message: "skBetween must be a tuple of two string bounds" }]);
+      throw new ValidationError([
+        { path: "skBetween", message: "skBetween must be a tuple of two string bounds" },
+      ]);
     }
     values[":sklo"] = pair[0];
     values[":skhi"] = pair[1];
@@ -214,13 +229,23 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
           ...built,
           limit: built.limit ?? (typeof fromInput.limit === "number" ? fromInput.limit : undefined),
           scanIndexForward:
-            built.scanIndexForward ?? (typeof fromInput.scanIndexForward === "boolean" ? fromInput.scanIndexForward : undefined),
+            built.scanIndexForward ??
+            (typeof fromInput.scanIndexForward === "boolean"
+              ? fromInput.scanIndexForward
+              : undefined),
           consistentRead:
-            built.consistentRead ?? (typeof fromInput.consistentRead === "boolean" ? fromInput.consistentRead : undefined),
-          select: built.select ?? (typeof fromInput.select === "string" ? (fromInput.select as QueryExtras<KeyParts>["select"]) : undefined),
+            built.consistentRead ??
+            (typeof fromInput.consistentRead === "boolean" ? fromInput.consistentRead : undefined),
+          select:
+            built.select ??
+            (typeof fromInput.select === "string"
+              ? (fromInput.select as QueryExtras<KeyParts>["select"])
+              : undefined),
           projectionExpression:
             built.projectionExpression ??
-            (typeof fromInput.projectionExpression === "string" ? fromInput.projectionExpression : undefined),
+            (typeof fromInput.projectionExpression === "string"
+              ? fromInput.projectionExpression
+              : undefined),
           expressionAttributeNames:
             built.expressionAttributeNames ??
             (typeof fromInput.expressionAttributeNames === "object"
@@ -231,7 +256,9 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
             (typeof fromInput.returnConsumedCapacity === "string"
               ? (fromInput.returnConsumedCapacity as QueryExtras<KeyParts>["returnConsumedCapacity"])
               : undefined),
-          cursor: built.cursor ?? (typeof fromInput.cursor === "string" ? (fromInput.cursor as OpaqueCursor) : undefined),
+          cursor:
+            built.cursor ??
+            (typeof fromInput.cursor === "string" ? (fromInput.cursor as OpaqueCursor) : undefined),
         };
         const pkAttr = idx.partitionKey;
         const skAttr = idx.sortKey;
@@ -245,7 +272,10 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
         Object.assign(values, skPart.values);
 
         if (builtFinal.filterExpression) {
-          if (!builtFinal.filterExpressionAttributeNames || !builtFinal.filterExpressionAttributeValues) {
+          if (
+            !builtFinal.filterExpressionAttributeNames ||
+            !builtFinal.filterExpressionAttributeValues
+          ) {
             throw new ValidationError([
               {
                 path: "filterExpression",
@@ -270,10 +300,14 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
             : undefined,
         );
 
-        const projNames = builtFinal.projectionExpression ? builtFinal.expressionAttributeNames ?? {} : {};
+        const projNames = builtFinal.projectionExpression
+          ? (builtFinal.expressionAttributeNames ?? {})
+          : {};
         const projExpr = builtFinal.projectionExpression;
         const mergedNamesForProjection =
-          Object.keys(projNames).length > 0 ? { ...merged.expressionAttributeNames, ...projNames } : merged.expressionAttributeNames;
+          Object.keys(projNames).length > 0
+            ? { ...merged.expressionAttributeNames, ...projNames }
+            : merged.expressionAttributeNames;
 
         return {
           type: "Query",
@@ -297,7 +331,13 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
   }
 
   return {
-    get<I>(fn: (input: I) => KeyParts & { consistentRead?: boolean; projectionExpression?: string; expressionAttributeNames?: Record<string, string> }): AccessPatternDef<I> {
+    get<I>(
+      fn: (input: I) => KeyParts & {
+        consistentRead?: boolean;
+        projectionExpression?: string;
+        expressionAttributeNames?: Record<string, string>;
+      },
+    ): AccessPatternDef<I> {
       return {
         name: "",
         kind: "get",
@@ -316,7 +356,8 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
       };
     },
 
-    query: <I>(indexName: string | undefined, fn: (input: I) => QueryExtras<KeyParts>) => queryPattern(indexName, fn, "query"),
+    query: <I>(indexName: string | undefined, fn: (input: I) => QueryExtras<KeyParts>) =>
+      queryPattern(indexName, fn, "query"),
 
     unique: <I>(indexName: string, fn: (input: I) => { pk: string; sk?: string }) => {
       return {
@@ -362,12 +403,18 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
           const fromInput = (input as Record<string, unknown>) ?? {};
           const builtFinal = {
             ...built,
-            limit: built.limit ?? (typeof fromInput.limit === "number" ? fromInput.limit : undefined),
+            limit:
+              built.limit ?? (typeof fromInput.limit === "number" ? fromInput.limit : undefined),
             consistentRead:
-              built.consistentRead ?? (typeof fromInput.consistentRead === "boolean" ? fromInput.consistentRead : undefined),
+              built.consistentRead ??
+              (typeof fromInput.consistentRead === "boolean"
+                ? fromInput.consistentRead
+                : undefined),
             projectionExpression:
               built.projectionExpression ??
-              (typeof fromInput.projectionExpression === "string" ? fromInput.projectionExpression : undefined),
+              (typeof fromInput.projectionExpression === "string"
+                ? fromInput.projectionExpression
+                : undefined),
             expressionAttributeNames:
               built.expressionAttributeNames ??
               (typeof fromInput.expressionAttributeNames === "object"
@@ -378,13 +425,23 @@ export function createAccessPatternFactory(table: TableDef, discriminatorValue: 
               (typeof fromInput.returnConsumedCapacity === "string"
                 ? (fromInput.returnConsumedCapacity as ScanExtras["returnConsumedCapacity"])
                 : undefined),
-            segment: built.segment ?? (typeof fromInput.segment === "number" ? fromInput.segment : undefined),
+            segment:
+              built.segment ??
+              (typeof fromInput.segment === "number" ? fromInput.segment : undefined),
             totalSegments:
-              built.totalSegments ?? (typeof fromInput.totalSegments === "number" ? fromInput.totalSegments : undefined),
-            cursor: built.cursor ?? (typeof fromInput.cursor === "string" ? (fromInput.cursor as OpaqueCursor) : undefined),
+              built.totalSegments ??
+              (typeof fromInput.totalSegments === "number" ? fromInput.totalSegments : undefined),
+            cursor:
+              built.cursor ??
+              (typeof fromInput.cursor === "string"
+                ? (fromInput.cursor as OpaqueCursor)
+                : undefined),
           };
           if (builtFinal.filterExpression) {
-            if (!builtFinal.filterExpressionAttributeNames || !builtFinal.filterExpressionAttributeValues) {
+            if (
+              !builtFinal.filterExpressionAttributeNames ||
+              !builtFinal.filterExpressionAttributeValues
+            ) {
               throw new ValidationError([
                 {
                   path: "filterExpression",

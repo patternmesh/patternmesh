@@ -54,14 +54,7 @@ writeFileSync(
 
 run(
   "pnpm",
-  [
-    "add",
-    coreTgz,
-    adapterTgz,
-    streamsTgz,
-    "@aws-sdk/client-dynamodb",
-    "@aws-sdk/lib-dynamodb",
-  ],
+  ["add", coreTgz, adapterTgz, streamsTgz, "@aws-sdk/client-dynamodb", "@aws-sdk/lib-dynamodb"],
   appDir,
 );
 

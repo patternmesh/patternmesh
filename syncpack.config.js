@@ -4,7 +4,7 @@ export default {
     {
       label: "aws-sdk-v3",
       dependencies: ["@aws-sdk/*"],
-      packages: ["packages/*"]
-    }
-  ]
+      packages: ["packages/*"],
+    },
+  ],
 };

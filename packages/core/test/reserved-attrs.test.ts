@@ -14,7 +14,10 @@ describe("reserved logical attribute names", () => {
         .keys(({ itemId }: { itemId: string }) => ({ pk: key("ITEM", itemId), sk: key("ROOT") }))
         .identity(["itemId"])
         .accessPatterns((ap) => ({
-          byId: ap.get(({ itemId }: { itemId: string }) => ({ pk: key("ITEM", itemId), sk: key("ROOT") })),
+          byId: ap.get(({ itemId }: { itemId: string }) => ({
+            pk: key("ITEM", itemId),
+            sk: key("ROOT"),
+          })),
         })),
     ).toThrow(ValidationError);
   });

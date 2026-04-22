@@ -184,12 +184,7 @@ await db.orchestrate.write(
       archivedAt: Math.floor(Date.now() / 1000),
     });
     o.delete("sourceDelete", User, { userId: "usr_1" });
-    o.conditionCheck(
-      "orgPresent",
-      Org,
-      { orgId: "org_1" },
-      (fields, op) => op.exists(fields.name),
-    );
+    o.conditionCheck("orgPresent", Org, { orgId: "org_1" }, (fields, op) => op.exists(fields.name));
   },
   { clientRequestToken: "custom-archive-001" },
 );

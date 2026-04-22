@@ -77,10 +77,15 @@ function resolveSkAttr(input: QueryInput): string | undefined {
   return undefined;
 }
 
-function cloneAllTables(byTable: Map<string, Record<string, unknown>[]>): Map<string, Record<string, unknown>[]> {
+function cloneAllTables(
+  byTable: Map<string, Record<string, unknown>[]>,
+): Map<string, Record<string, unknown>[]> {
   const out = new Map<string, Record<string, unknown>[]>();
   for (const [t, rows] of byTable) {
-    out.set(t, rows.map((r) => ({ ...r })));
+    out.set(
+      t,
+      rows.map((r) => ({ ...r })),
+    );
   }
   return out;
 }
@@ -101,14 +106,19 @@ function applyMockUpdateFromTransact(
     const nameAlias = m[1]!;
     const valAlias = m[2]!;
     const attrName = it.expressionAttributeNames[nameAlias];
-    if (attrName != null && Object.prototype.hasOwnProperty.call(it.expressionAttributeValues, valAlias)) {
+    if (
+      attrName != null &&
+      Object.prototype.hasOwnProperty.call(it.expressionAttributeValues, valAlias)
+    ) {
       hit[attrName] = it.expressionAttributeValues[valAlias];
     }
   }
 }
 
 /** In-memory mock assuming base-table keys `pk` and `sk` (matches typical defineTable examples). */
-export function createMemoryAdapter(): DynamoAdapter & { allItems(table: string): Record<string, unknown>[] } {
+export function createMemoryAdapter(): DynamoAdapter & {
+  allItems(table: string): Record<string, unknown>[];
+} {
   const byTable = new Map<string, Record<string, unknown>[]>();
 
   function list(table: string): Record<string, unknown>[] {
@@ -166,7 +176,9 @@ export function createMemoryAdapter(): DynamoAdapter & { allItems(table: string)
         filtered = filtered.filter((it) => skMatches(it, input, skAttr, pre, "begins"));
       }
       if (skAttr && input.expressionAttributeValues[":skeq"] !== undefined) {
-        filtered = filtered.filter((it) => skMatches(it, input, skAttr, input.expressionAttributeValues[":skeq"], "eq"));
+        filtered = filtered.filter((it) =>
+          skMatches(it, input, skAttr, input.expressionAttributeValues[":skeq"], "eq"),
+        );
       }
       if (skAttr && input.expressionAttributeValues[":sklo"] !== undefined) {
         filtered = filtered.filter((it) =>
@@ -179,9 +191,17 @@ export function createMemoryAdapter(): DynamoAdapter & { allItems(table: string)
       const lim = input.limit ?? filtered.length;
       const page = filtered.slice(0, lim);
       if (input.select === "COUNT") {
-        return { items: [], count: page.length, lastEvaluatedKey: undefined, consumedCapacity: { capacityUnits: page.length } };
+        return {
+          items: [],
+          count: page.length,
+          lastEvaluatedKey: undefined,
+          consumedCapacity: { capacityUnits: page.length },
+        };
       }
-      return { items: page.map((x) => ({ ...x })), consumedCapacity: { capacityUnits: page.length } };
+      return {
+        items: page.map((x) => ({ ...x })),
+        consumedCapacity: { capacityUnits: page.length },
+      };
     },
     async scan(input: ScanInput): Promise<ScanOutput> {
       let filtered = list(input.tableName);
@@ -269,7 +289,10 @@ export function createMemoryAdapter(): DynamoAdapter & { allItems(table: string)
   };
 }
 
-function pickKey(item: Record<string, unknown>, key: Record<string, unknown>): Record<string, unknown> {
+function pickKey(
+  item: Record<string, unknown>,
+  key: Record<string, unknown>,
+): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const k of Object.keys(key)) out[k] = item[k];
   return out;

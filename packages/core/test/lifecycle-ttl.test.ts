@@ -67,16 +67,25 @@ describe("v0.8 ttl + lifecycle", () => {
   });
 
   it("supports archive recipe with source delete", async () => {
-    const db = connect(AppTable, { adapter: createMemoryAdapter(), entities: { User, UserArchive } });
+    const db = connect(AppTable, {
+      adapter: createMemoryAdapter(),
+      entities: { User, UserArchive },
+    });
     await db.User.create({ userId: "usr_3" as never, email: "c@example.com" });
     await db.lifecycle?.archive({
       sourceEntity: User,
       sourceKey: { userId: "usr_3" as never },
       archiveEntity: UserArchive,
-      archiveItem: { archiveId: "arc_1" as never, userId: "usr_3" as never, email: "c@example.com" },
+      archiveItem: {
+        archiveId: "arc_1" as never,
+        userId: "usr_3" as never,
+        email: "c@example.com",
+      },
       sourceDisposition: "delete",
     });
     expect(await db.User.get({ userId: "usr_3" as never })).toBeNull();
-    expect(await db.UserArchive.get({ archiveId: "arc_1" as never })).toMatchObject({ userId: "usr_3" });
+    expect(await db.UserArchive.get({ archiveId: "arc_1" as never })).toMatchObject({
+      userId: "usr_3",
+    });
   });
 });

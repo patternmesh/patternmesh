@@ -38,7 +38,11 @@ export class ConditionFailedError extends DynamoModelError {
 export class ItemAlreadyExistsError extends DynamoModelError {
   readonly code = "ITEM_ALREADY_EXISTS" as const;
   readonly entity?: string;
-  constructor(message = "Item already exists", entity?: string, readonly cause?: unknown) {
+  constructor(
+    message = "Item already exists",
+    entity?: string,
+    readonly cause?: unknown,
+  ) {
     super("ITEM_ALREADY_EXISTS", message);
     this.name = "ItemAlreadyExistsError";
     this.entity = entity;
@@ -92,7 +96,11 @@ export class TransactionCanceledError extends DynamoModelError {
   readonly code = "TRANSACTION_CANCELED" as const;
   readonly reasons: readonly TransactionCancellationReason[];
   readonly cause?: unknown;
-  constructor(reasons: readonly TransactionCancellationReason[], message?: string, cause?: unknown) {
+  constructor(
+    reasons: readonly TransactionCancellationReason[],
+    message?: string,
+    cause?: unknown,
+  ) {
     super(
       "TRANSACTION_CANCELED",
       message ??
@@ -107,7 +115,10 @@ export class TransactionCanceledError extends DynamoModelError {
 export class IdempotentParameterMismatchError extends DynamoModelError {
   readonly code = "IDEMPOTENT_PARAMETER_MISMATCH" as const;
   readonly cause?: unknown;
-  constructor(message = "ClientRequestToken was reused with different request parameters", cause?: unknown) {
+  constructor(
+    message = "ClientRequestToken was reused with different request parameters",
+    cause?: unknown,
+  ) {
     super("IDEMPOTENT_PARAMETER_MISMATCH", message);
     this.name = "IdempotentParameterMismatchError";
     this.cause = cause;

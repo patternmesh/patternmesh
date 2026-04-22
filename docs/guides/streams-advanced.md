@@ -169,12 +169,12 @@ const decoded = decodeStreamEvent(fixture, {
 
 ## Failure-mode catalog
 
-| Condition | Error class | Thrown by |
-|-----------|-------------|-----------|
-| stream view type does not match `requiredViewType` | `StreamViewTypeError` | `decodeStreamRecord`, `decodeStreamEvent`, `handleStreamByEntity` |
-| `eventName` is not `INSERT`/`MODIFY`/`REMOVE` | `StreamDecodeError` | `decodeStreamRecord` |
-| image decoding fails (malformed attribute) | `StreamDecodeError` | `decodeStreamRecord` |
-| discriminator missing or unknown and mode is strict | `UnknownEntityError` | `decodeStreamRecord`, `decodeStreamEvent`, `handleStreamByEntity` |
+| Condition                                           | Error class           | Thrown by                                                         |
+| --------------------------------------------------- | --------------------- | ----------------------------------------------------------------- |
+| stream view type does not match `requiredViewType`  | `StreamViewTypeError` | `decodeStreamRecord`, `decodeStreamEvent`, `handleStreamByEntity` |
+| `eventName` is not `INSERT`/`MODIFY`/`REMOVE`       | `StreamDecodeError`   | `decodeStreamRecord`                                              |
+| image decoding fails (malformed attribute)          | `StreamDecodeError`   | `decodeStreamRecord`                                              |
+| discriminator missing or unknown and mode is strict | `UnknownEntityError`  | `decodeStreamRecord`, `decodeStreamEvent`, `handleStreamByEntity` |
 
 Every error extends `StreamDecodeError` and carries a `code` string for
 programmatic branching (`"STREAM_DECODE_ERROR"`, `"STREAM_VIEW_TYPE_ERROR"`,

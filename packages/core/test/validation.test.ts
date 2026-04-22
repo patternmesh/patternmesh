@@ -9,7 +9,11 @@ describe("validation", () => {
     const schema = { email: string().required() };
     const meta = buildFieldMetaMap(schema, []);
     expect(() =>
-      validateAndApplyDefaults({ email: "a@b.com", extra: 1 } as Record<string, unknown>, schema, meta),
+      validateAndApplyDefaults(
+        { email: "a@b.com", extra: 1 } as Record<string, unknown>,
+        schema,
+        meta,
+      ),
     ).toThrow(ValidationError);
   });
 });

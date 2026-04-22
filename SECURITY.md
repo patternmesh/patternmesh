@@ -5,9 +5,9 @@
 We provide security fixes for the latest release line only.
 
 | Version | Supported |
-| --- | --- |
-| 0.9.x | Yes |
-| < 0.9 | No |
+| ------- | --------- |
+| 0.9.x   | Yes       |
+| < 0.9   | No        |
 
 ## Reporting a vulnerability
 

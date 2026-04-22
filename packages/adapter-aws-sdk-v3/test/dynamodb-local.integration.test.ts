@@ -229,7 +229,9 @@ describe.skipIf(!hasLocal)("DynamoDB Local (AWS SDK v3 adapter)", () => {
     const byEmail = await db.User.find.byEmail({ email: "local2@example.com" });
     expect(byEmail).toMatchObject({ userId: "usr_local_2" });
 
-    const updated = await db.User.update({ userId: "usr_local_2" as never }).set({ name: "Renamed" }).go();
+    const updated = await db.User.update({ userId: "usr_local_2" as never })
+      .set({ name: "Renamed" })
+      .go();
     expect(updated).toMatchObject({ name: "Renamed", email: "local2@example.com" });
 
     const again = await db.User.get({ userId: "usr_local_2" as never });
@@ -284,9 +286,9 @@ describe.skipIf(!hasLocal)("DynamoDB Local (AWS SDK v3 adapter)", () => {
       adapter: createAwsSdkV3Adapter(doc),
       entities: { User },
     });
-    await expect(
-      db.User.find.gsiConsistentRead({ email: "any@example.com" }),
-    ).rejects.toThrow(ValidationError);
+    await expect(db.User.find.gsiConsistentRead({ email: "any@example.com" })).rejects.toThrow(
+      ValidationError,
+    );
   });
 
   it("allows ConsistentRead on LSI query and supports scan with capacity opt-in", async () => {
@@ -301,12 +303,18 @@ describe.skipIf(!hasLocal)("DynamoDB Local (AWS SDK v3 adapter)", () => {
       status: "active",
     });
 
-    const lsiPage = await db.User.find.byStatusLsi({ userId: "usr_lsi_local" as never, status: "active" });
+    const lsiPage = await db.User.find.byStatusLsi({
+      userId: "usr_lsi_local" as never,
+      status: "active",
+    });
     expect(lsiPage.items.length).toBeGreaterThanOrEqual(1);
 
     const scanned = (await db.User.find.scanUsers({
       returnConsumedCapacity: "TOTAL",
-    })) as { items: readonly Record<string, unknown>[]; consumedCapacity?: { capacityUnits?: number } };
+    })) as {
+      items: readonly Record<string, unknown>[];
+      consumedCapacity?: { capacityUnits?: number };
+    };
     expect(scanned.items.length).toBeGreaterThanOrEqual(1);
     // DynamoDB Local may omit consumed capacity even when requested.
     if (scanned.consumedCapacity) {
@@ -427,7 +435,10 @@ describe.skipIf(!hasLocal)("DynamoDB Local (AWS SDK v3 adapter)", () => {
         w.recipe("createUserSummary", (s) =>
           s
             .put("user", "User", (i) => ({ userId: i.userId, email: i.email }))
-            .put("summary", "UserSummary", (i) => ({ userId: i.userId, note: i.note ?? "created" })),
+            .put("summary", "UserSummary", (i) => ({
+              userId: i.userId,
+              note: i.note ?? "created",
+            })),
         ),
     });
     await db.recipes?.run("createUserSummary", {
@@ -443,7 +454,9 @@ describe.skipIf(!hasLocal)("DynamoDB Local (AWS SDK v3 adapter)", () => {
     expect(read?.emailLookup).toMatchObject({ userId: "usr_bundle_local" });
     const labels = await db.orchestrate?.counterSummary({
       primary: async (o) => {
-        o.conditionCheck("exists", User, { userId: "usr_bundle_local" as never }, (f, op) => op.exists(f.email));
+        o.conditionCheck("exists", User, { userId: "usr_bundle_local" as never }, (f, op) =>
+          op.exists(f.email),
+        );
       },
       summary: async (o) => {
         o.put("summary", UserSummary, { userId: "usr_bundle_local" as never, note: "updated" });

@@ -55,11 +55,11 @@ will collide at rest. Key design is a joint modeling exercise across entities.
 A common topology is **one partition key per aggregate** (e.g. organization,
 user, order) and **sort keys that sort related items together**:
 
-| Pattern | Example `sk` ideas | Typical access |
-|--------|---------------------|--------------|
-| Root + children | `ROOT`, `CHILD#<id>`, `CHILD#<id>#META` | `Query` partition with `begins_with` on `sk` for "all children" |
-| Time-ordered events | `EVENT#<iso8601>#<id>` | Range queries on time prefix |
-| Typed slots | `PROFILE`, `SETTINGS`, `SESSION#<id>` | `GetItem` for singletons; `Query` for collections |
+| Pattern             | Example `sk` ideas                      | Typical access                                                  |
+| ------------------- | --------------------------------------- | --------------------------------------------------------------- |
+| Root + children     | `ROOT`, `CHILD#<id>`, `CHILD#<id>#META` | `Query` partition with `begins_with` on `sk` for "all children" |
+| Time-ordered events | `EVENT#<iso8601>#<id>`                  | Range queries on time prefix                                    |
+| Typed slots         | `PROFILE`, `SETTINGS`, `SESSION#<id>`   | `GetItem` for singletons; `Query` for collections               |
 
 **Parent/child listing:** prefer **Query on the base table** with a bounded key
 condition (e.g. `pk = ORG#x AND begins_with(sk, "MEMBER#")`) over filtering
@@ -143,7 +143,7 @@ partition.
   partition key; you stay within one hot partition's data layout (which is
   both a feature and a capacity risk).
 
-**What LSIs do *not* do**
+**What LSIs do _not_ do**
 
 - They **cannot** introduce a **new partition key** — that is always a **GSI**
   (or a second table).
@@ -271,12 +271,12 @@ guarantees as TransactWrite).
 
 ## 12. Anti-patterns (short list)
 
-| Anti-pattern | Why |
-|--------------|-----|
-| Using **FilterExpression** as a **join** | No relational engine; you pay to read candidate items. |
-| **Unbounded `Query`** without a tight sort key | Large partitions + `begins_with` on short prefix → high RCU. |
-| **GSI sprawl** without query proof | Every index costs storage and write amplification. |
-| **Same logical entity, two key shapes** | Collision or explain-time confusion; pick one canonical key. |
+| Anti-pattern                                                  | Why                                                                                       |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Using **FilterExpression** as a **join**                      | No relational engine; you pay to read candidate items.                                    |
+| **Unbounded `Query`** without a tight sort key                | Large partitions + `begins_with` on short prefix → high RCU.                              |
+| **GSI sprawl** without query proof                            | Every index costs storage and write amplification.                                        |
+| **Same logical entity, two key shapes**                       | Collision or explain-time confusion; pick one canonical key.                              |
 | Expecting **cross-item atomic read+write** in one Dynamo call | Use TransactWrite + application-level read strategy, or redesign for single-item updates. |
 
 ---

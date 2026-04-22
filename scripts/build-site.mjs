@@ -22,17 +22,53 @@ const pages = [
   { src: "SECURITY.md", dest: "SECURITY.html", title: "Security" },
   { src: "CODE_OF_CONDUCT.md", dest: "CODE_OF_CONDUCT.html", title: "Code of Conduct" },
   { src: "RELEASE_CHECKLIST.md", dest: "RELEASE_CHECKLIST.html", title: "Release checklist" },
-  { src: "docs/single-table-patterns.md", dest: "docs/single-table-patterns.html", title: "Single-table design" },
+  {
+    src: "docs/single-table-patterns.md",
+    dest: "docs/single-table-patterns.html",
+    title: "Single-table design",
+  },
   { src: "docs/table-setup.md", dest: "docs/table-setup.html", title: "Table setup" },
   { src: "docs/API_REFERENCE.md", dest: "docs/API_REFERENCE.html", title: "API reference" },
-  { src: "docs/guides/relations.md", dest: "docs/guides/relations.html", title: "Relations cookbook" },
-  { src: "docs/guides/bundles-and-recipes.md", dest: "docs/guides/bundles-and-recipes.html", title: "Bundles and recipes" },
-  { src: "docs/guides/lifecycle.md", dest: "docs/guides/lifecycle.html", title: "Lifecycle recipes" },
-  { src: "docs/guides/complex-attributes.md", dest: "docs/guides/complex-attributes.html", title: "Complex attributes" },
-  { src: "docs/guides/streams-advanced.md", dest: "docs/guides/streams-advanced.html", title: "Streams advanced" },
-  { src: "packages/core/README.md", dest: "packages/core/index.html", title: "@patternmeshjs/core" },
-  { src: "packages/adapter-aws-sdk-v3/README.md", dest: "packages/adapter-aws-sdk-v3/index.html", title: "@patternmeshjs/aws-sdk-v3" },
-  { src: "packages/streams/README.md", dest: "packages/streams/index.html", title: "@patternmeshjs/streams" },
+  {
+    src: "docs/guides/relations.md",
+    dest: "docs/guides/relations.html",
+    title: "Relations cookbook",
+  },
+  {
+    src: "docs/guides/bundles-and-recipes.md",
+    dest: "docs/guides/bundles-and-recipes.html",
+    title: "Bundles and recipes",
+  },
+  {
+    src: "docs/guides/lifecycle.md",
+    dest: "docs/guides/lifecycle.html",
+    title: "Lifecycle recipes",
+  },
+  {
+    src: "docs/guides/complex-attributes.md",
+    dest: "docs/guides/complex-attributes.html",
+    title: "Complex attributes",
+  },
+  {
+    src: "docs/guides/streams-advanced.md",
+    dest: "docs/guides/streams-advanced.html",
+    title: "Streams advanced",
+  },
+  {
+    src: "packages/core/README.md",
+    dest: "packages/core/index.html",
+    title: "@patternmeshjs/core",
+  },
+  {
+    src: "packages/adapter-aws-sdk-v3/README.md",
+    dest: "packages/adapter-aws-sdk-v3/index.html",
+    title: "@patternmeshjs/aws-sdk-v3",
+  },
+  {
+    src: "packages/streams/README.md",
+    dest: "packages/streams/index.html",
+    title: "@patternmeshjs/streams",
+  },
 ];
 
 function rewriteHref(href) {

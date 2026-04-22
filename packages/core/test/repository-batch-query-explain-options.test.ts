@@ -163,14 +163,19 @@ describe("repository: batch APIs, query options, return modes, explain", () => {
       ],
     });
     expect((await db.User.get({ userId: "usr_w1" as never }))?.email).toBe("w1@x.com");
-    await db.User.batchWrite({ deletes: [{ userId: "usr_w1" as never }, { userId: "usr_w2" as never }] });
+    await db.User.batchWrite({
+      deletes: [{ userId: "usr_w1" as never }, { userId: "usr_w2" as never }],
+    });
     expect(await db.User.get({ userId: "usr_w1" as never })).toBeNull();
   });
 
   it("create return none and delete return old", async () => {
     const adapter = createMemoryAdapter();
     const db = connect(AppTable, { adapter, entities: { User } });
-    const c = await db.User.create({ userId: "usr_r" as never, email: "r@x.com" }, { return: "none" });
+    const c = await db.User.create(
+      { userId: "usr_r" as never, email: "r@x.com" },
+      { return: "none" },
+    );
     expect(c).toBeUndefined();
     await db.User.create({ userId: "usr_r2" as never, email: "r2@x.com" });
     const old = await db.User.delete({ userId: "usr_r2" as never }, { return: "old" });
@@ -181,7 +186,9 @@ describe("repository: batch APIs, query options, return modes, explain", () => {
     const adapter = createMemoryAdapter();
     const db = connect(AppTable, { adapter, entities: { User } });
     await db.User.create({ userId: "usr_u" as never, email: "u@x.com" });
-    const v = await db.User.update({ userId: "usr_u" as never }).set({ name: "N" }).go({ return: "none" });
+    const v = await db.User.update({ userId: "usr_u" as never })
+      .set({ name: "N" })
+      .go({ return: "none" });
     expect(v).toBeUndefined();
   });
 
@@ -233,13 +240,18 @@ describe("repository: batch APIs, query options, return modes, explain", () => {
     const adapter = createMemoryAdapter();
     const db = connect(LsiTable, { adapter, entities: { LsiUser } });
     await db.LsiUser.create({ userId: "usr_lsi_1" as never, email: "lsi@x.com", status: "active" });
-    const page = await db.LsiUser.find.byStatusLsi({ userId: "usr_lsi_1" as never, status: "active" });
+    const page = await db.LsiUser.find.byStatusLsi({
+      userId: "usr_lsi_1" as never,
+      status: "active",
+    });
     expect(page.items.length).toBeGreaterThanOrEqual(1);
     const scanLsi = await db.LsiUser.find.scanByLsi({});
     expect(scanLsi.items.length).toBeGreaterThanOrEqual(1);
     const scanGsi = await db.LsiUser.find.scanByGsi({});
     expect(scanGsi.items.length).toBeGreaterThanOrEqual(1);
-    await expect(db.LsiUser.find.byEmailGsiBad({ email: "lsi@x.com" })).rejects.toThrow(ValidationError);
+    await expect(db.LsiUser.find.byEmailGsiBad({ email: "lsi@x.com" })).rejects.toThrow(
+      ValidationError,
+    );
     await expect(db.LsiUser.find.scanByGsiBad({})).rejects.toThrow(ValidationError);
   });
 
