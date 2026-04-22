@@ -116,7 +116,11 @@ export function id<const P extends string>(
     isVersion: false,
     idPrefix: prefix,
   });
-  return Object.assign(f, { _idPrefix: prefix }) as FieldApi<Brand<string, `${P}Id`>, false, false> & {
+  return Object.assign(f, { _idPrefix: prefix }) as FieldApi<
+    Brand<string, `${P}Id`>,
+    false,
+    false
+  > & {
     readonly _idPrefix: P;
   };
 }
@@ -169,7 +173,11 @@ export function record<const V extends FieldDef>(
     isVersion: false,
     recordValueField: valueField,
   });
-  return Object.assign(f, { _recordValue: valueField }) as FieldApi<Record<string, FieldToValue<V>>, false, false> & {
+  return Object.assign(f, { _recordValue: valueField }) as FieldApi<
+    Record<string, FieldToValue<V>>,
+    false,
+    false
+  > & {
     readonly _recordValue: V;
   };
 }
@@ -185,7 +193,11 @@ export function list<const V extends FieldDef>(
     isVersion: false,
     listItemField: itemField,
   });
-  return Object.assign(f, { _listItem: itemField }) as FieldApi<readonly FieldToValue<V>[], false, false> & {
+  return Object.assign(f, { _listItem: itemField }) as FieldApi<
+    readonly FieldToValue<V>[],
+    false,
+    false
+  > & {
     readonly _listItem: V;
   };
 }
@@ -233,22 +245,22 @@ type FieldToValue<F extends FieldDef> = F["_kind"] extends "string"
               : F["_kind"] extends "ttl"
                 ? number
                 : F["_kind"] extends "object"
-                ? F extends { objectShape: infer O extends SchemaRecord }
-                  ? InferItem<O>
-                  : Record<string, unknown>
-                : F["_kind"] extends "record"
-                  ? F extends { recordValueField: infer V extends FieldDef }
-                    ? Record<string, FieldToValue<V>>
+                  ? F extends { objectShape: infer O extends SchemaRecord }
+                    ? InferItem<O>
                     : Record<string, unknown>
-                  : F["_kind"] extends "list"
-                    ? F extends { listItemField: infer V extends FieldDef }
-                      ? readonly FieldToValue<V>[]
-                      : readonly unknown[]
-                    : F["_kind"] extends "stringSet"
-                      ? ReadonlySet<string>
-                      : F["_kind"] extends "numberSet"
-                        ? ReadonlySet<number>
-                        : unknown;
+                  : F["_kind"] extends "record"
+                    ? F extends { recordValueField: infer V extends FieldDef }
+                      ? Record<string, FieldToValue<V>>
+                      : Record<string, unknown>
+                    : F["_kind"] extends "list"
+                      ? F extends { listItemField: infer V extends FieldDef }
+                        ? readonly FieldToValue<V>[]
+                        : readonly unknown[]
+                      : F["_kind"] extends "stringSet"
+                        ? ReadonlySet<string>
+                        : F["_kind"] extends "numberSet"
+                          ? ReadonlySet<number>
+                          : unknown;
 
 export type InferItem<S extends SchemaRecord> = {
   [K in keyof S]: S[K]["_required"] extends true
@@ -268,7 +280,10 @@ type RequiredKeysNoDefault<S extends SchemaRecord> = {
 
 type OptionalOrDefaultKeys<S extends SchemaRecord> = Exclude<keyof S, RequiredKeysNoDefault<S>>;
 
-export type CreateInput<S extends SchemaRecord> = Pick<InferItem<S>, RequiredKeysNoDefault<S> & keyof S> &
+export type CreateInput<S extends SchemaRecord> = Pick<
+  InferItem<S>,
+  RequiredKeysNoDefault<S> & keyof S
+> &
   Partial<Pick<InferItem<S>, OptionalOrDefaultKeys<S> & keyof S>>;
 
 export type PrimaryKeyInput<S extends SchemaRecord, Id extends readonly (keyof S)[]> = Pick<
@@ -303,7 +318,10 @@ export type AddableKeys<S extends SchemaRecord> = {
 }[keyof S];
 
 /** Numeric ADD surface (disjoint from Settable: version counters only in v0.1) */
-export type AddableShape<S extends SchemaRecord> = Pick<InferItem<S>, AddableKeys<S> & keyof InferItem<S>>;
+export type AddableShape<S extends SchemaRecord> = Pick<
+  InferItem<S>,
+  AddableKeys<S> & keyof InferItem<S>
+>;
 
 export type RemovableKeys<S extends SchemaRecord> = {
   [K in keyof S]: S[K] extends FieldDef
@@ -327,7 +345,10 @@ export function fieldRef<T>(path: string): FieldRef<T> {
   return { __brand: "FieldRef", path };
 }
 
-export function pathRef<T>(base: FieldRef<unknown>, ...segments: ReadonlyArray<string | number>): FieldRef<T> {
+export function pathRef<T>(
+  base: FieldRef<unknown>,
+  ...segments: ReadonlyArray<string | number>
+): FieldRef<T> {
   let path = base.path;
   for (const seg of segments) {
     path += typeof seg === "number" ? `[${seg}]` : `.${seg}`;

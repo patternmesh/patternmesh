@@ -18,7 +18,10 @@ export type CompiledEntity<
 };
 
 type KeyBuilder = (logical: Record<string, unknown>) => { pk: string; sk?: string };
-type GsiEntry = { indexName: string; fn: (logical: Record<string, unknown>) => Record<string, string> };
+type GsiEntry = {
+  indexName: string;
+  fn: (logical: Record<string, unknown>) => Record<string, string>;
+};
 
 interface EntityState<Name extends string, S extends SchemaRecord> {
   entityName: Name;
@@ -58,7 +61,9 @@ export class EntityDraft<const Name extends string, const S extends SchemaRecord
 class EntityWithTable<const Name extends string, const S extends SchemaRecord, T extends TableDef> {
   constructor(private readonly st: EntityState<Name, S>) {}
 
-  keys(fn: (input: Record<string, unknown>) => { pk: string; sk?: string }): EntityWithKeys<Name, S, T> {
+  keys(
+    fn: (input: Record<string, unknown>) => { pk: string; sk?: string },
+  ): EntityWithKeys<Name, S, T> {
     this.st.keyFn = fn as KeyBuilder;
     return new EntityWithKeys(this.st);
   }
@@ -81,7 +86,11 @@ class EntityWithKeys<const Name extends string, const S extends SchemaRecord, T 
   }
 }
 
-class EntityWithIdentity<const Name extends string, const S extends SchemaRecord, const Id extends readonly (keyof S & string)[]> {
+class EntityWithIdentity<
+  const Name extends string,
+  const S extends SchemaRecord,
+  const Id extends readonly (keyof S & string)[],
+> {
   constructor(private readonly st: EntityState<Name, S>) {}
 
   accessPatterns(
@@ -91,7 +100,9 @@ class EntityWithIdentity<const Name extends string, const S extends SchemaRecord
     const keyFn = this.st.keyFn;
     const identityKeys = this.st.identityKeys;
     if (!table || !keyFn || !identityKeys) {
-      throw new ConfigurationError("entity: incomplete chain (inTable → keys → identity → accessPatterns)");
+      throw new ConfigurationError(
+        "entity: incomplete chain (inTable → keys → identity → accessPatterns)",
+      );
     }
     assertNoReservedLogicalNames(table, this.st.schema);
     const ap = createAccessPatternFactory(table, this.st.entityName);
@@ -114,7 +125,11 @@ class EntityWithIdentity<const Name extends string, const S extends SchemaRecord
       gsiProjections: this.st.gsi,
       accessPatterns: patterns,
     };
-    return { [COMPILED_ENTITY]: true as const, runtime, _identityKeys: identityKeys } as CompiledEntity<S, Id>;
+    return {
+      [COMPILED_ENTITY]: true as const,
+      runtime,
+      _identityKeys: identityKeys,
+    } as CompiledEntity<S, Id>;
   }
 }
 

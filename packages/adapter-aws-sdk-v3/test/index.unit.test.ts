@@ -46,7 +46,9 @@ describe("aws-sdk-v3 adapter transact write serialization", () => {
     const docClient = { send } as unknown as import("@aws-sdk/lib-dynamodb").DynamoDBDocumentClient;
     const adapter = createAwsSdkV3Adapter(docClient);
 
-    await expect(adapter.batchWriteItem({ puts: [], deletes: [] })).rejects.toThrow(/requires at least one put or delete/i);
+    await expect(adapter.batchWriteItem({ puts: [], deletes: [] })).rejects.toThrow(
+      /requires at least one put or delete/i,
+    );
     expect(send).not.toHaveBeenCalled();
   });
 });

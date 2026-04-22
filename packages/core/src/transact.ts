@@ -8,7 +8,12 @@ import type { TableDef } from "./types.js";
 import type { CompiledOperation } from "./types.js";
 import type { CompiledEntity } from "./entity.js";
 import type { EntityRuntime } from "./entity-runtime.js";
-import { DISCRIMINATOR_ATTR, buildPrimaryKeyMap, logicalToStored, storedToLogicalPublic } from "./entity-runtime.js";
+import {
+  DISCRIMINATOR_ATTR,
+  buildPrimaryKeyMap,
+  logicalToStored,
+  storedToLogicalPublic,
+} from "./entity-runtime.js";
 import {
   IdempotentParameterMismatchError,
   TransactionCanceledError,
@@ -88,7 +93,9 @@ function assertEntityTable(ent: CompiledEntity, connectTable: TableDef): EntityR
   return r;
 }
 
-function mapAwsReasons(raw: ReturnType<typeof readTransactionCancellationReasons>): TransactionCancellationReason[] {
+function mapAwsReasons(
+  raw: ReturnType<typeof readTransactionCancellationReasons>,
+): TransactionCancellationReason[] {
   return raw.map((r) => ({
     code: r.Code,
     message: r.Message,
@@ -109,7 +116,12 @@ export class TransactWriteBuilder {
   put(
     ent: CompiledEntity,
     input: Record<string, unknown>,
-    options?: { if?: (fields: Record<string, FieldRef<unknown>>, op: typeof conditionOpsImpl) => ConditionExpr },
+    options?: {
+      if?: (
+        fields: Record<string, FieldRef<unknown>>,
+        op: typeof conditionOpsImpl,
+      ) => ConditionExpr;
+    },
   ): void {
     const runtime = assertEntityTable(ent, this.connectTable);
     const prepared = validateAndApplyDefaults({ ...input }, runtime.schema, runtime.fieldMeta);
@@ -148,7 +160,12 @@ export class TransactWriteBuilder {
 
   update(ent: CompiledEntity, primaryLogical: Record<string, unknown>) {
     const runtime = assertEntityTable(ent, this.connectTable);
-    const inst = createUpdateBuilder(runtime, noopAdapter, primaryLogical, createConditionShape(runtime.fieldMeta));
+    const inst = createUpdateBuilder(
+      runtime,
+      noopAdapter,
+      primaryLogical,
+      createConditionShape(runtime.fieldMeta),
+    );
     this.ops.push(() => {
       const c = inst.compileForTransact();
       const adapterItem: TransactWriteItemInput = {
@@ -168,7 +185,12 @@ export class TransactWriteBuilder {
   delete(
     ent: CompiledEntity,
     keyLogical: Record<string, unknown>,
-    options?: { if?: (fields: Record<string, FieldRef<unknown>>, op: typeof conditionOpsImpl) => ConditionExpr },
+    options?: {
+      if?: (
+        fields: Record<string, FieldRef<unknown>>,
+        op: typeof conditionOpsImpl,
+      ) => ConditionExpr;
+    },
   ): void {
     const runtime = assertEntityTable(ent, this.connectTable);
     const key = buildPrimaryKeyMap(runtime, keyLogical);
@@ -238,7 +260,9 @@ export class TransactWriteBuilder {
     const items = finalized.map((x) => x.adapterItem);
     const explainPlans = finalized.map((x) => x.explain);
     if (items.length === 0) {
-      throw new ValidationError([{ path: "tx.write", message: "Transaction has no write participants" }]);
+      throw new ValidationError([
+        { path: "tx.write", message: "Transaction has no write participants" },
+      ]);
     }
     if (items.length > TRANSACT_MAX_ITEMS) {
       throw new ValidationError([
@@ -257,7 +281,8 @@ export class TransactWriteBuilder {
         throw new ValidationError([
           {
             path: "tx.write",
-            message: "TransactWriteItems cannot target the same item more than once (duplicate key across Put/Update/Delete/ConditionCheck)",
+            message:
+              "TransactWriteItems cannot target the same item more than once (duplicate key across Put/Update/Delete/ConditionCheck)",
           },
         ]);
       }
@@ -299,7 +324,9 @@ export class TransactReadBuilder {
     options?: { consistentRead?: boolean },
   ): void {
     if (this.labels.has(label)) {
-      throw new ValidationError([{ path: `tx.read.get(${label})`, message: "Duplicate label in transact read" }]);
+      throw new ValidationError([
+        { path: `tx.read.get(${label})`, message: "Duplicate label in transact read" },
+      ]);
     }
     this.labels.add(label);
     const runtime = assertEntityTable(ent, this.connectTable);
@@ -314,7 +341,9 @@ export class TransactReadBuilder {
       consistentRead: s.consistentRead,
     }));
     if (items.length === 0) {
-      throw new ValidationError([{ path: "tx.read", message: "Transaction has no read participants" }]);
+      throw new ValidationError([
+        { path: "tx.read", message: "Transaction has no read participants" },
+      ]);
     }
     if (items.length > TRANSACT_MAX_ITEMS) {
       throw new ValidationError([
@@ -357,7 +386,11 @@ export class TransactReadBuilder {
         out[slot.label] = null;
         continue;
       }
-      out[slot.label] = storedToLogicalPublic(raw, slot.runtime.table, new Set(Object.keys(slot.runtime.schema)));
+      out[slot.label] = storedToLogicalPublic(
+        raw,
+        slot.runtime.table,
+        new Set(Object.keys(slot.runtime.schema)),
+      );
     }
     return out;
   }
@@ -377,12 +410,18 @@ function handleTransactError(e: unknown): never {
 export function createTransactServices(connectTable: TableDef, adapter: DynamoAdapter) {
   return {
     tx: {
-      write: async (fn: (w: TransactWriteBuilder) => void | Promise<void>, options?: { clientRequestToken?: string }) => {
+      write: async (
+        fn: (w: TransactWriteBuilder) => void | Promise<void>,
+        options?: { clientRequestToken?: string },
+      ) => {
         const b = new TransactWriteBuilder(connectTable);
         await fn(b);
         const { items } = b.finalize();
         try {
-          await adapter.transactWriteItems({ items, clientRequestToken: options?.clientRequestToken });
+          await adapter.transactWriteItems({
+            items,
+            clientRequestToken: options?.clientRequestToken,
+          });
         } catch (e) {
           handleTransactError(e);
         }

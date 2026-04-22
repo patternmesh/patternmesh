@@ -21,15 +21,7 @@ A single-table `AppTable` and compiled entities for every participant:
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { createAwsSdkV3Adapter } from "@patternmeshjs/aws-sdk-v3";
-import {
-  connect,
-  defineTable,
-  entity,
-  enumType,
-  id,
-  key,
-  string,
-} from "@patternmeshjs/core";
+import { connect, defineTable, entity, enumType, id, key, string } from "@patternmeshjs/core";
 
 const AppTable = defineTable({
   name: "app",
@@ -149,9 +141,7 @@ await db.Org.members.add({
 const members = await db.Org.members.list({ orgId: "org_1" });
 const orgs = await db.User.orgs.listTargets({ userId: "usr_1" });
 const edge = await db.Membership.get({ orgId: "org_1", userId: "usr_1" });
-const parentOrg = edge
-  ? await db.Membership.org.get({ orgId: edge.orgId })
-  : null;
+const parentOrg = edge ? await db.Membership.org.get({ orgId: edge.orgId }) : null;
 ```
 
 ## Contracts and failure modes

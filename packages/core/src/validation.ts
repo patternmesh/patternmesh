@@ -2,12 +2,12 @@ import { ValidationError } from "./errors.js";
 import type { FieldMeta } from "./types.js";
 import type { FieldDef, SchemaRecord } from "./fields.js";
 
-const ISO_DATETIME_RE =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
+const ISO_DATETIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
 
 function isJsonSerializable(value: unknown): boolean {
   if (value === undefined) return false;
-  if (typeof value === "function" || typeof value === "symbol" || typeof value === "bigint") return false;
+  if (typeof value === "function" || typeof value === "symbol" || typeof value === "bigint")
+    return false;
   try {
     JSON.stringify(value);
     return true;
@@ -42,7 +42,10 @@ function validateByFieldDef(
     issues.push({ path, message: "Expected string (ISO datetime)" });
     return;
   }
-  if (def._kind === "datetime" && (typeof value !== "string" || !ISO_DATETIME_RE.test(value) || Number.isNaN(Date.parse(value)))) {
+  if (
+    def._kind === "datetime" &&
+    (typeof value !== "string" || !ISO_DATETIME_RE.test(value) || Number.isNaN(Date.parse(value)))
+  ) {
     issues.push({ path, message: "Expected ISO-8601 datetime string" });
     return;
   }
@@ -57,13 +60,23 @@ function validateByFieldDef(
     return;
   }
   if (def._kind === "ttl") {
-    if (typeof value !== "number" || !Number.isFinite(value) || !Number.isInteger(value) || value < 0) {
+    if (
+      typeof value !== "number" ||
+      !Number.isFinite(value) ||
+      !Number.isInteger(value) ||
+      value < 0
+    ) {
       issues.push({ path, message: "Expected TTL epoch seconds as a non-negative integer number" });
     }
     return;
   }
   if (def._kind === "object") {
-    if (typeof value !== "object" || value === null || Array.isArray(value) || value instanceof Set) {
+    if (
+      typeof value !== "object" ||
+      value === null ||
+      Array.isArray(value) ||
+      value instanceof Set
+    ) {
       issues.push({ path, message: "Expected object" });
       return;
     }
@@ -76,7 +89,8 @@ function validateByFieldDef(
       const child = shape[k]!;
       const childVal = obj[k];
       if (childVal === undefined) {
-        if (child._required) issues.push({ path: `${path}.${k}`, message: "Required field missing" });
+        if (child._required)
+          issues.push({ path: `${path}.${k}`, message: "Required field missing" });
         continue;
       }
       validateByFieldDef(child, childVal, `${path}.${k}`, issues);
@@ -84,7 +98,12 @@ function validateByFieldDef(
     return;
   }
   if (def._kind === "record") {
-    if (typeof value !== "object" || value === null || Array.isArray(value) || value instanceof Set) {
+    if (
+      typeof value !== "object" ||
+      value === null ||
+      Array.isArray(value) ||
+      value instanceof Set
+    ) {
       issues.push({ path, message: "Expected record object" });
       return;
     }
@@ -134,7 +153,11 @@ function validateByFieldDef(
   }
 }
 
-export function assertStrictKeys(input: Record<string, unknown>, allowed: Set<string>, context: string): void {
+export function assertStrictKeys(
+  input: Record<string, unknown>,
+  allowed: Set<string>,
+  context: string,
+): void {
   const issues: { path: string; message: string }[] = [];
   for (const k of Object.keys(input)) {
     if (!allowed.has(k)) {

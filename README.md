@@ -24,11 +24,11 @@ explainable compiled operations.
 
 ## Packages
 
-| Package | Purpose |
-| --- | --- |
-| [`@patternmeshjs/core`](packages/core/README.md) | schema DSL, repositories, access patterns, transactions, relations |
-| [`@patternmeshjs/aws-sdk-v3`](packages/adapter-aws-sdk-v3/README.md) | AWS DocumentClient adapter |
-| [`@patternmeshjs/streams`](packages/streams/README.md) | typed stream decoding and routing |
+| Package                                                              | Purpose                                                            |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`@patternmeshjs/core`](packages/core/README.md)                     | schema DSL, repositories, access patterns, transactions, relations |
+| [`@patternmeshjs/aws-sdk-v3`](packages/adapter-aws-sdk-v3/README.md) | AWS DocumentClient adapter                                         |
+| [`@patternmeshjs/streams`](packages/streams/README.md)               | typed stream decoding and routing                                  |
 
 ## Install
 
@@ -125,9 +125,7 @@ db.User.explain.get({ userId: "usr_1" });
 ### Updates and conditions
 
 ```ts
-const updated = await db.User.update({ userId: "usr_1" })
-  .set({ name: "Ada Byron" })
-  .go();
+const updated = await db.User.update({ userId: "usr_1" }).set({ name: "Ada Byron" }).go();
 ```
 
 ### Transactions

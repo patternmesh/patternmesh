@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { DynamoDBRecord, DynamoDBStreamEvent } from "../src/index.js";
-import { decodeStreamEvent, decodeStreamRecord, handleStreamByEntity, isTtlRemove } from "../src/index.js";
+import {
+  decodeStreamEvent,
+  decodeStreamRecord,
+  handleStreamByEntity,
+  isTtlRemove,
+} from "../src/index.js";
 
 function record(base: Partial<DynamoDBRecord>): DynamoDBRecord {
   return {
@@ -81,7 +86,10 @@ describe("@patternmeshjs/streams", () => {
         }),
       ],
     };
-    const [decoded] = decodeStreamEvent(event, { decoders: { User: (i) => i }, requiredViewType: "any" });
+    const [decoded] = decodeStreamEvent(event, {
+      decoders: { User: (i) => i },
+      requiredViewType: "any",
+    });
     expect(decoded.eventName).toBe("REMOVE");
     expect(decoded.oldItem).toMatchObject({ userId: "usr_2" });
   });

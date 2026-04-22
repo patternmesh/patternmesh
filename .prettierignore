@@ -1,0 +1,11 @@
+node_modules
+dist
+site
+docs/api
+coverage
+pnpm-lock.yaml
+CHANGELOG.md
+packages/*/CHANGELOG.md
+.changeset/*.md
+.pnpm-store
+.cursor

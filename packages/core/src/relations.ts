@@ -4,7 +4,10 @@ import type { FieldRef } from "./fields.js";
 import { conditionOpsImpl } from "./update.js";
 
 type EntityMap = Record<string, CompiledEntity>;
-type ConditionCheckFn = (fields: Record<string, FieldRef<unknown>>, op: typeof conditionOpsImpl) => unknown;
+type ConditionCheckFn = (
+  fields: Record<string, FieldRef<unknown>>,
+  op: typeof conditionOpsImpl,
+) => unknown;
 
 export type HasManyDecl = {
   readonly kind: "hasMany";
@@ -130,7 +133,10 @@ export class RelationBuilder<E extends EntityMap> {
   belongsTo(
     source: keyof E & string,
     alias: string,
-    opts: { target: keyof E & string; mapGet: (input: Record<string, unknown>) => Record<string, unknown> },
+    opts: {
+      target: keyof E & string;
+      mapGet: (input: Record<string, unknown>) => Record<string, unknown>;
+    },
   ): this {
     this.rels.push({
       kind: "belongsTo",
@@ -178,7 +184,9 @@ export class ReadBundleStepBuilder<E extends EntityMap> {
 
   private assertLabel(label: string): void {
     if (this.labels.has(label)) {
-      throw new ValidationError([{ path: `readBundle.${label}`, message: "Duplicate bundle label" }]);
+      throw new ValidationError([
+        { path: `readBundle.${label}`, message: "Duplicate bundle label" },
+      ]);
     }
     this.labels.add(label);
   }
@@ -189,7 +197,11 @@ export class ReadBundleStepBuilder<E extends EntityMap> {
     }
   }
 
-  rootGet(label: string, entity: keyof E & string, mapInput: (input: Record<string, unknown>) => Record<string, unknown>): this {
+  rootGet(
+    label: string,
+    entity: keyof E & string,
+    mapInput: (input: Record<string, unknown>) => Record<string, unknown>,
+  ): this {
     this.assertLabel(label);
     this.assertEntity(entity, `readBundle.${label}.entity`);
     this.steps.push({ kind: "rootGet", label, entity, mapInput });
@@ -257,7 +269,9 @@ export class WriteRecipeStepBuilder<E extends EntityMap> {
 
   private assertLabel(label: string): void {
     if (this.labels.has(label)) {
-      throw new ValidationError([{ path: `writeRecipe.${label}`, message: "Duplicate recipe label" }]);
+      throw new ValidationError([
+        { path: `writeRecipe.${label}`, message: "Duplicate recipe label" },
+      ]);
     }
     this.labels.add(label);
   }
@@ -268,14 +282,22 @@ export class WriteRecipeStepBuilder<E extends EntityMap> {
     }
   }
 
-  put(label: string, entity: keyof E & string, mapInput: (input: Record<string, unknown>) => Record<string, unknown>): this {
+  put(
+    label: string,
+    entity: keyof E & string,
+    mapInput: (input: Record<string, unknown>) => Record<string, unknown>,
+  ): this {
     this.assertLabel(label);
     this.assertEntity(entity, `writeRecipe.${label}.entity`);
     this.steps.push({ kind: "put", label, entity, mapInput });
     return this;
   }
 
-  delete(label: string, entity: keyof E & string, mapKey: (input: Record<string, unknown>) => Record<string, unknown>): this {
+  delete(
+    label: string,
+    entity: keyof E & string,
+    mapKey: (input: Record<string, unknown>) => Record<string, unknown>,
+  ): this {
     this.assertLabel(label);
     this.assertEntity(entity, `writeRecipe.${label}.entity`);
     this.steps.push({ kind: "delete", label, entity, mapKey });
@@ -318,7 +340,9 @@ export class WriteRecipeBuilder<E extends EntityMap> {
 
   recipe(name: string, fn: (b: WriteRecipeStepBuilder<E>) => WriteRecipeStepBuilder<E>): this {
     if (this.names.has(name)) {
-      throw new ValidationError([{ path: `writeRecipe.${name}`, message: "Duplicate recipe name" }]);
+      throw new ValidationError([
+        { path: `writeRecipe.${name}`, message: "Duplicate recipe name" },
+      ]);
     }
     this.names.add(name);
     this.recipes.push({ name, steps: fn(new WriteRecipeStepBuilder(this.entities)).build() });
@@ -352,7 +376,11 @@ export function createWriteRecipes<E extends EntityMap>(
   return fn(new WriteRecipeBuilder(entities)).build();
 }
 
-function assertPatternExists(repo: Record<string, unknown>, patternName: string, path: string): void {
+function assertPatternExists(
+  repo: Record<string, unknown>,
+  patternName: string,
+  path: string,
+): void {
   const findObj = repo.find as Record<string, unknown> | undefined;
   const maybeFn = findObj?.[patternName];
   if (typeof maybeFn !== "function") {
@@ -360,33 +388,50 @@ function assertPatternExists(repo: Record<string, unknown>, patternName: string,
   }
 }
 
-export function applyRelations(
-  dbOut: Record<string, unknown>,
-  rels: RelationsConfig,
-): void {
+export function applyRelations(dbOut: Record<string, unknown>, rels: RelationsConfig): void {
   for (const rel of rels) {
     if (rel.kind === "hasMany") {
       const rootRepo = dbOut[rel.root] as Record<string, unknown> | undefined;
       const targetRepo = dbOut[rel.target] as Record<string, unknown> | undefined;
       if (!rootRepo || !targetRepo) {
-        throw new ValidationError([{ path: `relations.${rel.root}.${rel.alias}`, message: `Unknown relation entity reference "${rel.root}" or "${rel.target}"` }]);
+        throw new ValidationError([
+          {
+            path: `relations.${rel.root}.${rel.alias}`,
+            message: `Unknown relation entity reference "${rel.root}" or "${rel.target}"`,
+          },
+        ]);
       }
       if (rootRepo[rel.alias] !== undefined) {
-        throw new ValidationError([{ path: `relations.${rel.root}.${rel.alias}`, message: "Alias collision on root namespace" }]);
+        throw new ValidationError([
+          {
+            path: `relations.${rel.root}.${rel.alias}`,
+            message: "Alias collision on root namespace",
+          },
+        ]);
       }
-      assertPatternExists(targetRepo, rel.listPattern, `relations.${rel.root}.${rel.alias}.listPattern`);
-      const listFn = (targetRepo.find as Record<string, (input: Record<string, unknown>) => Promise<unknown>>)[rel.listPattern]!;
+      assertPatternExists(
+        targetRepo,
+        rel.listPattern,
+        `relations.${rel.root}.${rel.alias}.listPattern`,
+      );
+      const listFn = (
+        targetRepo.find as Record<string, (input: Record<string, unknown>) => Promise<unknown>>
+      )[rel.listPattern]!;
       rootRepo[rel.alias] = {
         list: (input: Record<string, unknown>) => listFn(input),
         add:
           typeof targetRepo.create === "function" && rel.mapCreate
             ? (input: Record<string, unknown>) =>
-                (targetRepo.create as (input: Record<string, unknown>) => Promise<unknown>)(rel.mapCreate!(input))
+                (targetRepo.create as (input: Record<string, unknown>) => Promise<unknown>)(
+                  rel.mapCreate!(input),
+                )
             : undefined,
         create:
           typeof targetRepo.create === "function" && rel.mapCreate
             ? (input: Record<string, unknown>) =>
-                (targetRepo.create as (input: Record<string, unknown>) => Promise<unknown>)(rel.mapCreate!(input))
+                (targetRepo.create as (input: Record<string, unknown>) => Promise<unknown>)(
+                  rel.mapCreate!(input),
+                )
             : undefined,
       };
       continue;
@@ -396,16 +441,28 @@ export function applyRelations(
       const sourceRepo = dbOut[rel.source] as Record<string, unknown> | undefined;
       const targetRepo = dbOut[rel.target] as Record<string, unknown> | undefined;
       if (!sourceRepo || !targetRepo) {
-        throw new ValidationError([{ path: `relations.${rel.source}.${rel.alias}`, message: `Unknown relation entity reference "${rel.source}" or "${rel.target}"` }]);
+        throw new ValidationError([
+          {
+            path: `relations.${rel.source}.${rel.alias}`,
+            message: `Unknown relation entity reference "${rel.source}" or "${rel.target}"`,
+          },
+        ]);
       }
       if (sourceRepo[rel.alias] !== undefined) {
-        throw new ValidationError([{ path: `relations.${rel.source}.${rel.alias}`, message: "Alias collision on source namespace" }]);
+        throw new ValidationError([
+          {
+            path: `relations.${rel.source}.${rel.alias}`,
+            message: "Alias collision on source namespace",
+          },
+        ]);
       }
       sourceRepo[rel.alias] = {
         get:
           typeof targetRepo.get === "function"
             ? (input: Record<string, unknown>) =>
-                (targetRepo.get as (input: Record<string, unknown>) => Promise<unknown>)(rel.mapGet(input))
+                (targetRepo.get as (input: Record<string, unknown>) => Promise<unknown>)(
+                  rel.mapGet(input),
+                )
             : undefined,
       };
       continue;
@@ -416,28 +473,46 @@ export function applyRelations(
     const targetRepo = dbOut[rel.target] as Record<string, unknown> | undefined;
     if (!rootRepo || !throughRepo || !targetRepo) {
       throw new ValidationError([
-        { path: `relations.${rel.root}.${rel.alias}`, message: `Unknown relation entity reference "${rel.root}", "${rel.through}", or "${rel.target}"` },
+        {
+          path: `relations.${rel.root}.${rel.alias}`,
+          message: `Unknown relation entity reference "${rel.root}", "${rel.through}", or "${rel.target}"`,
+        },
       ]);
     }
     if (rootRepo[rel.alias] !== undefined) {
-      throw new ValidationError([{ path: `relations.${rel.root}.${rel.alias}`, message: "Alias collision on root namespace" }]);
+      throw new ValidationError([
+        {
+          path: `relations.${rel.root}.${rel.alias}`,
+          message: "Alias collision on root namespace",
+        },
+      ]);
     }
-    assertPatternExists(throughRepo, rel.listPattern, `relations.${rel.root}.${rel.alias}.listPattern`);
-    const listFn = (throughRepo.find as Record<string, (input: Record<string, unknown>) => Promise<unknown>>)[rel.listPattern]!;
+    assertPatternExists(
+      throughRepo,
+      rel.listPattern,
+      `relations.${rel.root}.${rel.alias}.listPattern`,
+    );
+    const listFn = (
+      throughRepo.find as Record<string, (input: Record<string, unknown>) => Promise<unknown>>
+    )[rel.listPattern]!;
     rootRepo[rel.alias] = {
       list: (input: Record<string, unknown>) => listFn(input),
       listTargets: async (input: Record<string, unknown>) => {
         const throughPage = (await listFn(input)) as { items?: readonly Record<string, unknown>[] };
         const keys = (throughPage.items ?? []).map((it) => rel.mapTargetKey(it));
         if (typeof targetRepo.batchGet === "function") {
-          return (targetRepo.batchGet as (keys: readonly Record<string, unknown>[]) => Promise<unknown>)(keys);
+          return (
+            targetRepo.batchGet as (keys: readonly Record<string, unknown>[]) => Promise<unknown>
+          )(keys);
         }
         return [];
       },
       add:
         typeof throughRepo.create === "function" && rel.mapAdd
           ? (input: Record<string, unknown>) =>
-              (throughRepo.create as (input: Record<string, unknown>) => Promise<unknown>)(rel.mapAdd!(input))
+              (throughRepo.create as (input: Record<string, unknown>) => Promise<unknown>)(
+                rel.mapAdd!(input),
+              )
           : undefined,
     };
   }

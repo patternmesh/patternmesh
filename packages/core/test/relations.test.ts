@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { connect, defineTable, entity, enumType, id, key, string, ValidationError } from "../src/index.js";
+import {
+  connect,
+  defineTable,
+  entity,
+  enumType,
+  id,
+  key,
+  string,
+  ValidationError,
+} from "../src/index.js";
 import { createMemoryAdapter } from "./mock-adapter.js";
 
 const AppTable = defineTable({
@@ -47,11 +56,20 @@ const Membership = entity("Membership", {
   role: enumType(["owner", "admin", "member"] as const).required(),
 })
   .inTable(AppTable)
-  .keys(({ orgId, userId }: MembershipKeyInput) => ({ pk: key("ORG", orgId), sk: key("MEMBER", userId) }))
-  .index("GSI1", ({ userId }: UserKeyInput) => ({ gsi1pk: key("USER", userId), gsi1sk: key("ORG") }))
+  .keys(({ orgId, userId }: MembershipKeyInput) => ({
+    pk: key("ORG", orgId),
+    sk: key("MEMBER", userId),
+  }))
+  .index("GSI1", ({ userId }: UserKeyInput) => ({
+    gsi1pk: key("USER", userId),
+    gsi1sk: key("ORG"),
+  }))
   .identity(["orgId", "userId"])
   .accessPatterns((ap) => ({
-    byOrg: ap.query(undefined, ({ orgId }: OrgKeyInput) => ({ pk: key("ORG", orgId), skBeginsWith: key("MEMBER") })),
+    byOrg: ap.query(undefined, ({ orgId }: OrgKeyInput) => ({
+      pk: key("ORG", orgId),
+      skBeginsWith: key("MEMBER"),
+    })),
     byOrgAdmins: ap.query(undefined, ({ orgId }: OrgKeyInput) => ({
       pk: key("ORG", orgId),
       skBeginsWith: key("MEMBER"),
@@ -59,7 +77,10 @@ const Membership = entity("Membership", {
       filterExpressionAttributeNames: { "#r": "role" },
       filterExpressionAttributeValues: { ":admin": "admin" },
     })),
-    byUser: ap.query("GSI1", ({ userId }: UserKeyInput) => ({ pk: key("USER", userId), skBeginsWith: key("ORG") })),
+    byUser: ap.query("GSI1", ({ userId }: UserKeyInput) => ({
+      pk: key("USER", userId),
+      skBeginsWith: key("ORG"),
+    })),
   }));
 
 const Folder = entity("Folder", {
@@ -75,7 +96,10 @@ const Folder = entity("Folder", {
   }))
   .identity(["folderId"])
   .accessPatterns((ap) => ({
-    byId: ap.get(({ folderId }: FolderKeyInput) => ({ pk: key("FOLDER", folderId), sk: key("ROOT") })),
+    byId: ap.get(({ folderId }: FolderKeyInput) => ({
+      pk: key("FOLDER", folderId),
+      sk: key("ROOT"),
+    })),
     byParent: ap.query("GSI1", ({ parentId, cursor, limit }: FolderParentPageInput) => ({
       pk: key("PARENT", String(parentId ?? "ROOT")),
       skBeginsWith: key("FOLDER"),
@@ -136,43 +160,73 @@ describe("relations DSL and namespaces", () => {
     await db.Org.create({ orgId: "org_1" as never, name: "Acme" });
     await db.User.create({ userId: "usr_1" as never, email: "u1@example.com" });
 
-    await (db.Org as unknown as { members: { add: (input: Record<string, unknown>) => Promise<unknown> } }).members.add({
+    await (
+      db.Org as unknown as {
+        members: { add: (input: Record<string, unknown>) => Promise<unknown> };
+      }
+    ).members.add({
       orgId: "org_1" as never,
       userId: "usr_1" as never,
       role: "admin",
     });
     const orgMembers = await (
-      db.Org as unknown as { members: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> } }
+      db.Org as unknown as {
+        members: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> };
+      }
     ).members.list({ orgId: "org_1" as never });
     expect(orgMembers.items.length).toBe(1);
     const userOrgs = await (
-      db.User as unknown as { orgs: { listTargets: (input: Record<string, unknown>) => Promise<Record<string, unknown>[]> } }
+      db.User as unknown as {
+        orgs: {
+          listTargets: (input: Record<string, unknown>) => Promise<Record<string, unknown>[]>;
+        };
+      }
     ).orgs.listTargets({ userId: "usr_1" as never });
     expect(userOrgs[0]).toMatchObject({ orgId: "org_1", name: "Acme" });
     const admins = await (
-      db.Org as unknown as { admins: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> } }
+      db.Org as unknown as {
+        admins: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> };
+      }
     ).admins.list({ orgId: "org_1" as never });
     expect(admins.items.length).toBe(1);
 
     const m = (await db.Membership.find.byOrg({ orgId: "org_1" as never })) as { items: unknown[] };
     const parent = await (
-      db.Membership as unknown as { org: { get: (input: Record<string, unknown>) => Promise<unknown> } }
+      db.Membership as unknown as {
+        org: { get: (input: Record<string, unknown>) => Promise<unknown> };
+      }
     ).org.get(m.items[0]! as Record<string, unknown>);
     expect(parent).toMatchObject({ orgId: "org_1" });
 
     await db.Folder.create({ folderId: "fld_root" as never, name: "root" });
-    await db.Folder.create({ folderId: "fld_child_1" as never, parentId: "fld_root" as never, name: "c1" });
-    await db.Folder.create({ folderId: "fld_child_2" as never, parentId: "fld_root" as never, name: "c2" });
+    await db.Folder.create({
+      folderId: "fld_child_1" as never,
+      parentId: "fld_root" as never,
+      name: "c1",
+    });
+    await db.Folder.create({
+      folderId: "fld_child_2" as never,
+      parentId: "fld_root" as never,
+      name: "c2",
+    });
     const childrenPage1 = await (
-      db.Folder as unknown as { children: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[]; cursor?: string }> } }
+      db.Folder as unknown as {
+        children: {
+          list: (input: Record<string, unknown>) => Promise<{ items: unknown[]; cursor?: string }>;
+        };
+      }
     ).children.list({ parentId: "fld_root" as never, limit: 1 });
     expect(childrenPage1.items.length).toBe(1);
     const childrenPage2 = await (
-      db.Folder as unknown as { children: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> } }
+      db.Folder as unknown as {
+        children: { list: (input: Record<string, unknown>) => Promise<{ items: unknown[] }> };
+      }
     ).children.list({ parentId: "fld_root" as never, cursor: childrenPage1.cursor });
     expect(childrenPage2.items.length).toBeGreaterThanOrEqual(1);
     const parentFolder = await (
-      db.Folder as unknown as { parent: { get: (input: Record<string, unknown>) => Promise<unknown> } }
+      db.Folder as unknown as {
+        parent: { get: (input: Record<string, unknown>) => Promise<unknown> };
+      }
     ).parent.get({ parentId: "fld_root" as never });
     expect(parentFolder).toMatchObject({ folderId: "fld_root" });
   });
@@ -196,7 +250,11 @@ describe("relations DSL and namespaces", () => {
     const labels = await db.orchestrate?.write(async (o) => {
       o.put("createOrg", Org, { orgId: "org_3" as never, name: "Gamma" });
       o.put("createUser", User, { userId: "usr_3" as never, email: "u3@example.com" });
-      o.put("join", Membership, { orgId: "org_3" as never, userId: "usr_3" as never, role: "owner" });
+      o.put("join", Membership, {
+        orgId: "org_3" as never,
+        userId: "usr_3" as never,
+        role: "owner",
+      });
     });
     expect(labels?.createOrg?.operation).toBe("Put");
     expect(await db.Org.get({ orgId: "org_3" as never })).toMatchObject({ name: "Gamma" });
@@ -204,12 +262,19 @@ describe("relations DSL and namespaces", () => {
 
   it("supports explicit fan-out orchestration for materialized views", async () => {
     const adapter = createMemoryAdapter();
-    const db = connect(AppTable, { adapter, entities: { Org, User, Membership, Folder, OrgSummary } });
+    const db = connect(AppTable, {
+      adapter,
+      entities: { Org, User, Membership, Folder, OrgSummary },
+    });
     const labels = await db.orchestrate?.fanOut(
       {
         primary: async (o) => {
           o.put("createOrg", Org, { orgId: "org_4" as never, name: "Delta" });
-          o.put("joinOwner", Membership, { orgId: "org_4" as never, userId: "usr_4" as never, role: "owner" });
+          o.put("joinOwner", Membership, {
+            orgId: "org_4" as never,
+            userId: "usr_4" as never,
+            role: "owner",
+          });
         },
         fanOut: async (o) => {
           o.put("summaryUpsert", OrgSummary, { orgId: "org_4" as never, memberCount: "1" });
@@ -219,7 +284,9 @@ describe("relations DSL and namespaces", () => {
     );
     expect(labels?.primary.createOrg?.operation).toBe("Put");
     expect(labels?.fanOut.summaryUpsert?.operation).toBe("Put");
-    expect(await db.OrgSummary.get({ orgId: "org_4" as never })).toMatchObject({ memberCount: "1" });
+    expect(await db.OrgSummary.get({ orgId: "org_4" as never })).toMatchObject({
+      memberCount: "1",
+    });
   });
 
   it("supports declared read bundles with deterministic labels", async () => {
@@ -244,7 +311,11 @@ describe("relations DSL and namespaces", () => {
         ),
     });
     await db.Org.create({ orgId: "org_6" as never, name: "Six" });
-    await db.Membership.create({ orgId: "org_6" as never, userId: "usr_6" as never, role: "member" });
+    await db.Membership.create({
+      orgId: "org_6" as never,
+      userId: "usr_6" as never,
+      role: "member",
+    });
     const out = await db.read?.run("orgProfile", { orgId: "org_6" as never });
     expect(out?.org).toMatchObject({ orgId: "org_6" });
     expect(Array.isArray(out?.members)).toBe(true);
@@ -264,7 +335,9 @@ describe("relations DSL and namespaces", () => {
           { maxDepth: 2 },
         ),
     });
-    await expect(db.read?.run("tooDeep", { orgId: "org_1" as never })).rejects.toThrow(ValidationError);
+    await expect(db.read?.run("tooDeep", { orgId: "org_1" as never })).rejects.toThrow(
+      ValidationError,
+    );
     expect(() =>
       connect(AppTable, {
         adapter,
@@ -291,7 +364,10 @@ describe("relations DSL and namespaces", () => {
             .put("summary", "OrgSummary", (input) => ({ orgId: input.orgId, memberCount: "0" })),
         ),
     });
-    const labels = await db.recipes?.run("createOrgWithSummary", { orgId: "org_7" as never, name: "Seven" });
+    const labels = await db.recipes?.run("createOrgWithSummary", {
+      orgId: "org_7" as never,
+      name: "Seven",
+    });
     expect(labels?.createOrg.operation).toBe("Put");
     expect(await db.Org.get({ orgId: "org_7" as never })).toMatchObject({ name: "Seven" });
     expect(db.recipes?.explain("createOrgWithSummary").steps.length).toBe(2);
@@ -299,7 +375,10 @@ describe("relations DSL and namespaces", () => {
 
   it("supports counterSummary template and summary labels", async () => {
     const adapter = createMemoryAdapter();
-    const db = connect(AppTable, { adapter, entities: { Org, User, Membership, Folder, OrgSummary } });
+    const db = connect(AppTable, {
+      adapter,
+      entities: { Org, User, Membership, Folder, OrgSummary },
+    });
     const labels = await db.orchestrate?.counterSummary({
       primary: async (o) => {
         o.put("org", Org, { orgId: "org_8" as never, name: "Eight" });

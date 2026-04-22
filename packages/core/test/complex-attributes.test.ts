@@ -36,7 +36,10 @@ const Profile = entity("Profile", {
   .keys(({ profileId }: ProfileKeyInput) => ({ pk: key("PROFILE", profileId), sk: key("ROOT") }))
   .identity(["profileId"])
   .accessPatterns((ap) => ({
-    byId: ap.get(({ profileId }: ProfileKeyInput) => ({ pk: key("PROFILE", profileId), sk: key("ROOT") })),
+    byId: ap.get(({ profileId }: ProfileKeyInput) => ({
+      pk: key("PROFILE", profileId),
+      sk: key("ROOT"),
+    })),
   }));
 
 describe("complex attributes", () => {
@@ -76,7 +79,12 @@ describe("complex attributes", () => {
       .setAdd("labels", new Set(["gamma"]))
       .setDelete("labels", new Set(["alpha"]))
       .removePath(["settings.locale"])
-      .if((f, o) => o.and(o.contains(pathRef(f.tags!, 0), "z"), o.beginsWith(pathRef(f.settings!, "theme"), "li")))
+      .if((f, o) =>
+        o.and(
+          o.contains(pathRef(f.tags!, 0), "z"),
+          o.beginsWith(pathRef(f.settings!, "theme"), "li"),
+        ),
+      )
       .explain();
     expect(op.updateExpression).toContain("list_append");
     expect(op.updateExpression).toContain("DELETE");

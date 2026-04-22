@@ -159,13 +159,13 @@ cycles) throw `ValidationError`.
 
 ## Embed vs child items: a quick decision guide
 
-| Signal | Embed | Child item |
-|--------|-------|------------|
-| bounded size, always read with parent | yes | |
-| high-cardinality or unbounded | | yes |
-| independently paginated or queried | | yes |
-| high-churn with many partial writes | | yes |
-| ordered feed with cursors | | yes |
+| Signal                                | Embed | Child item |
+| ------------------------------------- | ----- | ---------- |
+| bounded size, always read with parent | yes   |            |
+| high-cardinality or unbounded         |       | yes        |
+| independently paginated or queried    |       | yes        |
+| high-churn with many partial writes   |       | yes        |
+| ordered feed with cursors             |       | yes        |
 
 For an Org / User / Membership style many-to-many, see
 [docs/guides/relations.md](./relations.md).

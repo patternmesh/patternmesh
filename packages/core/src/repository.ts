@@ -13,7 +13,12 @@ import {
 } from "./errors.js";
 import { isConditionalCheckFailed } from "./aws-error.js";
 import { validateAndApplyDefaults } from "./validation.js";
-import { buildPrimaryKeyMap, logicalToStored, storedToLogicalPublic, DISCRIMINATOR_ATTR } from "./entity-runtime.js";
+import {
+  buildPrimaryKeyMap,
+  logicalToStored,
+  storedToLogicalPublic,
+  DISCRIMINATOR_ATTR,
+} from "./entity-runtime.js";
 import type { EntityRuntime } from "./entity-runtime.js";
 import { explainDeleteItem, explainGetItem, emptyCompiled } from "./explain-helpers.js";
 import { createUpdateBuilder, createConditionShape } from "./update.js";
@@ -22,7 +27,10 @@ import { BATCH_GET_MAX_KEYS, BATCH_WRITE_MAX_OPS, chunkArray, sleep } from "./ba
 const DEFAULT_BATCH_ATTEMPTS = 6;
 const DEFAULT_COUNT_MAX_PAGES = 1000;
 
-function mapStoredToItem(runtime: EntityRuntime, stored: Record<string, unknown>): Record<string, unknown> {
+function mapStoredToItem(
+  runtime: EntityRuntime,
+  stored: Record<string, unknown>,
+): Record<string, unknown> {
   return storedToLogicalPublic(stored, runtime.table, new Set(Object.keys(runtime.schema)));
 }
 
@@ -57,7 +65,11 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
       const out = await adapter.putItem({
         tableName,
         item,
-        ...(mode === "old" ? { returnValues: "ALL_OLD" as const } : mode === "none" ? { returnValues: "NONE" as const } : {}),
+        ...(mode === "old"
+          ? { returnValues: "ALL_OLD" as const }
+          : mode === "none"
+            ? { returnValues: "NONE" as const }
+            : {}),
       });
       if (mode === "none") return undefined;
       if (mode === "old") {
@@ -67,7 +79,8 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
       const attrs = out.attributes ?? item;
       return mapStoredToItem(runtime, attrs);
     } catch (e) {
-      if (isConditionalCheckFailed(e)) throw new ConditionFailedError("Conditional check failed on create", e);
+      if (isConditionalCheckFailed(e))
+        throw new ConditionFailedError("Conditional check failed on create", e);
       throw e;
     }
   }
@@ -85,7 +98,11 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
         item,
         conditionExpression: "attribute_not_exists(#pk)",
         expressionAttributeNames: { "#pk": runtime.table.partitionKey },
-        ...(mode === "old" ? { returnValues: "ALL_OLD" as const } : mode === "none" ? { returnValues: "NONE" as const } : {}),
+        ...(mode === "old"
+          ? { returnValues: "ALL_OLD" as const }
+          : mode === "none"
+            ? { returnValues: "NONE" as const }
+            : {}),
       });
       if (mode === "none") return undefined;
       if (mode === "old") {
@@ -96,7 +113,11 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
       return mapStoredToItem(runtime, attrs);
     } catch (e) {
       if (isConditionalCheckFailed(e)) {
-        throw new ItemAlreadyExistsError(`Item already exists for entity "${runtime.entityName}"`, runtime.entityName, e);
+        throw new ItemAlreadyExistsError(
+          `Item already exists for entity "${runtime.entityName}"`,
+          runtime.entityName,
+          e,
+        );
       }
       throw e;
     }
@@ -127,7 +148,8 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
       }
       return undefined;
     } catch (e) {
-      if (isConditionalCheckFailed(e)) throw new ConditionFailedError("Conditional check failed on delete", e);
+      if (isConditionalCheckFailed(e))
+        throw new ConditionFailedError("Conditional check failed on delete", e);
       throw e;
     }
   }
@@ -176,11 +198,15 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
       exclusiveStartKey = out.lastEvaluatedKey;
       if (!exclusiveStartKey) break;
     }
-    if (plan.returnConsumedCapacity) return { count: total, consumedCapacity: { capacityUnits: totalCapacity } };
+    if (plan.returnConsumedCapacity)
+      return { count: total, consumedCapacity: { capacityUnits: totalCapacity } };
     return total;
   }
 
-  async function runPattern(pattern: AccessPatternDef, input: Record<string, unknown>): Promise<unknown> {
+  async function runPattern(
+    pattern: AccessPatternDef,
+    input: Record<string, unknown>,
+  ): Promise<unknown> {
     const plan = pattern.buildRequest(input);
     if (plan.type === "GetItem") {
       const raw = await adapter.getItem({
@@ -285,7 +311,10 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
     return w;
   }
 
-  function explainPattern(pattern: AccessPatternDef, input: Record<string, unknown>): CompiledOperation {
+  function explainPattern(
+    pattern: AccessPatternDef,
+    input: Record<string, unknown>,
+  ): CompiledOperation {
     const plan = pattern.buildRequest(input);
     if (plan.type === "GetItem") {
       return {
@@ -346,7 +375,9 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
     };
   }
 
-  async function batchGet(keys: readonly Record<string, unknown>[]): Promise<(Record<string, unknown> | null)[]> {
+  async function batchGet(
+    keys: readonly Record<string, unknown>[],
+  ): Promise<(Record<string, unknown> | null)[]> {
     if (keys.length === 0) return [];
     const preparedKeys = keys.map((k) => buildPrimaryKeyMap(runtime, k));
     const slots: (Record<string, unknown> | null)[] = new Array(keys.length).fill(null);
@@ -379,7 +410,10 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
       }
     };
 
-    const chunks = chunkArray(preparedKeys.map((k, i) => ({ k, i })), BATCH_GET_MAX_KEYS);
+    const chunks = chunkArray(
+      preparedKeys.map((k, i) => ({ k, i })),
+      BATCH_GET_MAX_KEYS,
+    );
     for (const metaChunk of chunks) {
       let pending = metaChunk;
       for (let attempt = 0; attempt < DEFAULT_BATCH_ATTEMPTS; attempt++) {
@@ -404,7 +438,10 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
     | { readonly kind: "put"; readonly item: Record<string, unknown> }
     | { readonly kind: "delete"; readonly key: Record<string, unknown> };
 
-  async function batchWrite(req: { puts?: readonly Record<string, unknown>[]; deletes?: readonly Record<string, unknown>[] }): Promise<void> {
+  async function batchWrite(req: {
+    puts?: readonly Record<string, unknown>[];
+    deletes?: readonly Record<string, unknown>[];
+  }): Promise<void> {
     const ops: BatchOp[] = [];
     for (const p of req.puts ?? []) {
       const prepared = validateAndApplyDefaults({ ...p }, runtime.schema, runtime.fieldMeta);
@@ -450,7 +487,10 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
     }));
   }
 
-  function explainBatchWrite(req: { puts?: readonly Record<string, unknown>[]; deletes?: readonly Record<string, unknown>[] }): BatchChunkPlan[] {
+  function explainBatchWrite(req: {
+    puts?: readonly Record<string, unknown>[];
+    deletes?: readonly Record<string, unknown>[];
+  }): BatchChunkPlan[] {
     const ops: BatchOp[] = [];
     for (const p of req.puts ?? []) {
       const prepared = validateAndApplyDefaults({ ...p }, runtime.schema, runtime.fieldMeta);
@@ -460,7 +500,9 @@ export function createRepository(runtime: EntityRuntime, adapter: DynamoAdapter)
       ops.push({ kind: "delete", key: buildPrimaryKeyMap(runtime, d) });
     }
     return chunkArray(ops, BATCH_WRITE_MAX_OPS).map((chunk) => {
-      const putItems = chunk.filter((o): o is Extract<BatchOp, { kind: "put" }> => o.kind === "put").map((o) => o.item);
+      const putItems = chunk
+        .filter((o): o is Extract<BatchOp, { kind: "put" }> => o.kind === "put")
+        .map((o) => o.item);
       const deleteKeys = chunk
         .filter((o): o is Extract<BatchOp, { kind: "delete" }> => o.kind === "delete")
         .map((o) => o.key);

@@ -17,7 +17,10 @@ export function emptyCompiled(
   };
 }
 
-export function explainGetItem(runtime: EntityRuntime, logical: Record<string, unknown>): CompiledOperation {
+export function explainGetItem(
+  runtime: EntityRuntime,
+  logical: Record<string, unknown>,
+): CompiledOperation {
   const key = buildPrimaryKeyMap(runtime, logical);
   return {
     ...emptyCompiled(runtime.entityName, "GetItem", runtime.table.name),
@@ -25,7 +28,10 @@ export function explainGetItem(runtime: EntityRuntime, logical: Record<string, u
   };
 }
 
-export function explainDeleteItem(runtime: EntityRuntime, logical: Record<string, unknown>): CompiledOperation {
+export function explainDeleteItem(
+  runtime: EntityRuntime,
+  logical: Record<string, unknown>,
+): CompiledOperation {
   const key = buildPrimaryKeyMap(runtime, logical);
   return {
     ...emptyCompiled(runtime.entityName, "DeleteItem", runtime.table.name),

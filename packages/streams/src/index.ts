@@ -139,10 +139,15 @@ function decodeImage(
 ): { entityName?: string; item?: unknown } {
   if (!image) return {};
   const logical = unmarshall(image as Parameters<typeof unmarshall>[0]) as Record<string, unknown>;
-  const entityName = typeof logical[discriminatorAttr] === "string" ? (logical[discriminatorAttr] as string) : undefined;
+  const entityName =
+    typeof logical[discriminatorAttr] === "string"
+      ? (logical[discriminatorAttr] as string)
+      : undefined;
   if (!entityName) {
     if (mode === "strict") {
-      throw new StreamDecodeError(`streams.decode: Missing discriminator "${discriminatorAttr}" in stream image`);
+      throw new StreamDecodeError(
+        `streams.decode: Missing discriminator "${discriminatorAttr}" in stream image`,
+      );
     }
     return { item: logical };
   }
@@ -164,17 +169,33 @@ export function isTtlRemove(record: Pick<DynamoDBRecord, "eventName" | "userIden
   );
 }
 
-export function decodeStreamRecord(record: DynamoDBRecord, options: DecodeStreamRecordOptions): DecodedStreamEvent {
+export function decodeStreamRecord(
+  record: DynamoDBRecord,
+  options: DecodeStreamRecordOptions,
+): DecodedStreamEvent {
   const mode = options.unknownEntityMode ?? "strict";
   const discriminatorAttr = options.discriminatorAttr ?? "entity";
   assertViewType(record, normalizeRequired(options.requiredViewType));
   const eventName = parseEventName(record.eventName);
 
   const keys = record.dynamodb?.Keys
-    ? (unmarshall(record.dynamodb.Keys as Parameters<typeof unmarshall>[0]) as Record<string, unknown>)
+    ? (unmarshall(record.dynamodb.Keys as Parameters<typeof unmarshall>[0]) as Record<
+        string,
+        unknown
+      >)
     : undefined;
-  const next = decodeImage(record.dynamodb?.NewImage as Record<string, unknown> | undefined, options.decoders, mode, discriminatorAttr);
-  const prev = decodeImage(record.dynamodb?.OldImage as Record<string, unknown> | undefined, options.decoders, mode, discriminatorAttr);
+  const next = decodeImage(
+    record.dynamodb?.NewImage as Record<string, unknown> | undefined,
+    options.decoders,
+    mode,
+    discriminatorAttr,
+  );
+  const prev = decodeImage(
+    record.dynamodb?.OldImage as Record<string, unknown> | undefined,
+    options.decoders,
+    mode,
+    discriminatorAttr,
+  );
   return {
     eventName,
     entityName: next.entityName ?? prev.entityName,
@@ -187,14 +208,19 @@ export function decodeStreamRecord(record: DynamoDBRecord, options: DecodeStream
   };
 }
 
-export function decodeStreamEvent(event: DynamoDBStreamEvent, options: DecodeStreamRecordOptions): readonly DecodedStreamEvent[] {
+export function decodeStreamEvent(
+  event: DynamoDBStreamEvent,
+  options: DecodeStreamRecordOptions,
+): readonly DecodedStreamEvent[] {
   return event.Records.map((record) => decodeStreamRecord(record, options));
 }
 
 export async function handleStreamByEntity(
   event: DynamoDBStreamEvent,
   options: DecodeStreamRecordOptions & {
-    readonly handlers: Partial<Record<EventName, (evt: DecodedStreamEvent) => void | Promise<void>>>;
+    readonly handlers: Partial<
+      Record<EventName, (evt: DecodedStreamEvent) => void | Promise<void>>
+    >;
   },
 ): Promise<void> {
   const decoded = decodeStreamEvent(event, options);

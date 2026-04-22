@@ -18,7 +18,9 @@ describe("update explain", () => {
       }));
 
     const db = connect(T, { adapter: createMemoryAdapter(), entities: { E } });
-    const op = db.E.update({ id: "x_1" as never }).set({ name: "n" }).explain();
+    const op = db.E.update({ id: "x_1" as never })
+      .set({ name: "n" })
+      .explain();
     expect(op.operation).toBe("UpdateItem");
     expect(op.updateExpression).toMatch(/^SET /);
     expect(op.key).toEqual({ pk: "P#x_1", sk: "S" });

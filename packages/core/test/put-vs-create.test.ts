@@ -20,7 +20,10 @@ const User = entity("User", {
   .keys(({ userId }: { userId: string }) => ({ pk: key("USER", userId), sk: key("ROOT") }))
   .identity(["userId"])
   .accessPatterns((ap) => ({
-    byId: ap.get(({ userId }: { userId: string }) => ({ pk: key("USER", userId), sk: key("ROOT") })),
+    byId: ap.get(({ userId }: { userId: string }) => ({
+      pk: key("USER", userId),
+      sk: key("ROOT"),
+    })),
   }));
 
 describe("repository put vs create", () => {

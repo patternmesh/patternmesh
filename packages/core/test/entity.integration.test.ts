@@ -1,13 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  connect,
-  defineTable,
-  entity,
-  enumType,
-  id,
-  key,
-  string,
-} from "../src/index.js";
+import { connect, defineTable, entity, enumType, id, key, string } from "../src/index.js";
 import { createMemoryAdapter } from "./mock-adapter.js";
 
 const AppTable = defineTable({

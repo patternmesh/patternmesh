@@ -146,8 +146,19 @@ export function compileConditionExpression(expr: ConditionExpr): {
   const nameCounter = { i: 0 };
   const valCounter = { i: 0 };
   const pathToName = new Map<string, string>();
-  const conditionExpression = compileCond(expr as unknown as CondNode, nameCounter, valCounter, pathToName, names, values);
-  return { conditionExpression, expressionAttributeNames: names, expressionAttributeValues: values };
+  const conditionExpression = compileCond(
+    expr as unknown as CondNode,
+    nameCounter,
+    valCounter,
+    pathToName,
+    names,
+    values,
+  );
+  return {
+    conditionExpression,
+    expressionAttributeNames: names,
+    expressionAttributeValues: values,
+  };
 }
 
 export const conditionOpsImpl = {
@@ -180,7 +191,9 @@ export const conditionOpsImpl = {
   },
 };
 
-export function createConditionShape(fieldMeta: Record<string, FieldMeta>): Record<string, FieldRef<unknown>> {
+export function createConditionShape(
+  fieldMeta: Record<string, FieldMeta>,
+): Record<string, FieldRef<unknown>> {
   const shape: Record<string, FieldRef<unknown>> = {};
   for (const k of Object.keys(fieldMeta)) {
     const meta = fieldMeta[k];
@@ -285,7 +298,10 @@ export class UpdateBuilderInstance {
   }
 
   setAdd(path: string | FieldRef<unknown>, members: Set<unknown>): this {
-    if (members.size === 0) throw new ValidationError([{ path: typeof path === "string" ? path : path.path, message: "Empty set is not allowed" }]);
+    if (members.size === 0)
+      throw new ValidationError([
+        { path: typeof path === "string" ? path : path.path, message: "Empty set is not allowed" },
+      ]);
     const p = typeof path === "string" ? path : path.path;
     this.assertKnownPathRoot(p, "setAdd");
     this.setAddOps.push({ path: p, members });
@@ -293,21 +309,30 @@ export class UpdateBuilderInstance {
   }
 
   setDelete(path: string | FieldRef<unknown>, members: Set<unknown>): this {
-    if (members.size === 0) throw new ValidationError([{ path: typeof path === "string" ? path : path.path, message: "Empty set is not allowed" }]);
+    if (members.size === 0)
+      throw new ValidationError([
+        { path: typeof path === "string" ? path : path.path, message: "Empty set is not allowed" },
+      ]);
     const p = typeof path === "string" ? path : path.path;
     this.assertKnownPathRoot(p, "setDelete");
     this.setDeleteOps.push({ path: p, members });
     return this;
   }
 
-  if(fn: (fields: Record<string, FieldRef<unknown>>, op: typeof conditionOpsImpl) => ConditionExpr): this {
+  if(
+    fn: (fields: Record<string, FieldRef<unknown>>, op: typeof conditionOpsImpl) => ConditionExpr,
+  ): this {
     this.userCond = fn(this.conditionShape, conditionOpsImpl) as unknown as CondNode;
     return this;
   }
 
   explain(): CompiledOperation {
-    const { updateExpression, expressionAttributeNames, expressionAttributeValues, conditionExpression } =
-      this.compileExpressions();
+    const {
+      updateExpression,
+      expressionAttributeNames,
+      expressionAttributeValues,
+      conditionExpression,
+    } = this.compileExpressions();
     const key = buildPrimaryKeyMap(this.runtime, this.primaryLogical);
     return {
       ...emptyCompiled(this.runtime.entityName, "UpdateItem", this.runtime.table.name),
@@ -329,8 +354,12 @@ export class UpdateBuilderInstance {
     readonly expressionAttributeValues: Record<string, unknown>;
     readonly conditionExpression?: string;
   } {
-    const { updateExpression, expressionAttributeNames, expressionAttributeValues, conditionExpression } =
-      this.compileExpressions();
+    const {
+      updateExpression,
+      expressionAttributeNames,
+      expressionAttributeValues,
+      conditionExpression,
+    } = this.compileExpressions();
     const key = buildPrimaryKeyMap(this.runtime, this.primaryLogical);
     return {
       tableName: this.runtime.table.name,
@@ -346,8 +375,12 @@ export class UpdateBuilderInstance {
     return?: "new" | "old" | "none" | "updatedNew" | "updatedOld";
     returnValuesOnConditionCheckFailure?: "old" | "none";
   }): Promise<Record<string, unknown> | undefined> {
-    const { updateExpression, expressionAttributeNames, expressionAttributeValues, conditionExpression } =
-      this.compileExpressions();
+    const {
+      updateExpression,
+      expressionAttributeNames,
+      expressionAttributeValues,
+      conditionExpression,
+    } = this.compileExpressions();
     const key = buildPrimaryKeyMap(this.runtime, this.primaryLogical);
     const ret = options?.return ?? "new";
     const rv =
@@ -381,9 +414,14 @@ export class UpdateBuilderInstance {
       if (!out) {
         throw new Error("UpdateItem returned no attributes for the requested return mode");
       }
-      return storedToLogicalPublic(out, this.runtime.table, new Set(Object.keys(this.runtime.schema)));
+      return storedToLogicalPublic(
+        out,
+        this.runtime.table,
+        new Set(Object.keys(this.runtime.schema)),
+      );
     } catch (e) {
-      if (isConditionalCheckFailed(e)) throw new ConditionFailedError("Conditional check failed", e);
+      if (isConditionalCheckFailed(e))
+        throw new ConditionFailedError("Conditional check failed", e);
       throw e;
     }
   }

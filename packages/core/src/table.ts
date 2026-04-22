@@ -10,16 +10,29 @@ export function defineTable<const T extends TableDef>(def: T): T {
   }
   for (const [name, idx] of lsiEntries) {
     if (idx.partitionKey !== def.partitionKey) {
-      throw new Error(`defineTable: localIndexes.${name} must use the same partitionKey as the base table`);
+      throw new Error(
+        `defineTable: localIndexes.${name} must use the same partitionKey as the base table`,
+      );
     }
     if (!idx.sortKey) {
       throw new Error(`defineTable: localIndexes.${name}.sortKey is required`);
     }
-    if (idx.projectionType === "INCLUDE" && (!idx.nonKeyAttributes || idx.nonKeyAttributes.length === 0)) {
-      throw new Error(`defineTable: localIndexes.${name}.nonKeyAttributes is required when projectionType is INCLUDE`);
+    if (
+      idx.projectionType === "INCLUDE" &&
+      (!idx.nonKeyAttributes || idx.nonKeyAttributes.length === 0)
+    ) {
+      throw new Error(
+        `defineTable: localIndexes.${name}.nonKeyAttributes is required when projectionType is INCLUDE`,
+      );
     }
-    if (idx.projectionType !== "INCLUDE" && idx.nonKeyAttributes && idx.nonKeyAttributes.length > 0) {
-      throw new Error(`defineTable: localIndexes.${name}.nonKeyAttributes is only valid with projectionType INCLUDE`);
+    if (
+      idx.projectionType !== "INCLUDE" &&
+      idx.nonKeyAttributes &&
+      idx.nonKeyAttributes.length > 0
+    ) {
+      throw new Error(
+        `defineTable: localIndexes.${name}.nonKeyAttributes is only valid with projectionType INCLUDE`,
+      );
     }
   }
   return def;
