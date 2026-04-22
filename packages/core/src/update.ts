@@ -62,15 +62,19 @@ function compileCond(
     const out: Array<string | number> = [];
     const parts = path.split(".");
     for (const part of parts) {
-      const m = part.match(/^([^[\]]+)(.*)$/);
-      if (!m) continue;
-      out.push(m[1]!);
-      let rest = m[2] ?? "";
+      const bracket = part.indexOf("[");
+      const root = bracket === -1 ? part : part.slice(0, bracket);
+      if (!root) continue;
+      out.push(root);
+      let rest = bracket === -1 ? "" : part.slice(bracket);
       while (rest.length > 0) {
-        const idx = rest.match(/^\[(\d+)\](.*)$/);
-        if (!idx) break;
-        out.push(Number(idx[1]));
-        rest = idx[2] ?? "";
+        if (rest[0] !== "[") break;
+        const close = rest.indexOf("]");
+        if (close <= 1) break;
+        const indexText = rest.slice(1, close);
+        if (!/^\d+$/.test(indexText)) break;
+        out.push(Number(indexText));
+        rest = rest.slice(close + 1);
       }
     }
     return out;
@@ -452,15 +456,19 @@ export class UpdateBuilderInstance {
       const out: Array<string | number> = [];
       const parts = path.split(".");
       for (const part of parts) {
-        const m = part.match(/^([^[\]]+)(.*)$/);
-        if (!m) continue;
-        out.push(m[1]!);
-        let rest = m[2] ?? "";
+        const bracket = part.indexOf("[");
+        const root = bracket === -1 ? part : part.slice(0, bracket);
+        if (!root) continue;
+        out.push(root);
+        let rest = bracket === -1 ? "" : part.slice(bracket);
         while (rest.length > 0) {
-          const idx = rest.match(/^\[(\d+)\](.*)$/);
-          if (!idx) break;
-          out.push(Number(idx[1]));
-          rest = idx[2] ?? "";
+          if (rest[0] !== "[") break;
+          const close = rest.indexOf("]");
+          if (close <= 1) break;
+          const indexText = rest.slice(1, close);
+          if (!/^\d+$/.test(indexText)) break;
+          out.push(Number(indexText));
+          rest = rest.slice(close + 1);
         }
       }
       return out;
