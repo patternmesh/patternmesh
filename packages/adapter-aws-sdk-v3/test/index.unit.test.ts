@@ -1,5 +1,15 @@
 import { describe, expect, it, vi } from "vitest";
-import { BatchWriteCommand, TransactWriteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  BatchGetCommand,
+  BatchWriteCommand,
+  DeleteCommand,
+  PutCommand,
+  QueryCommand,
+  ScanCommand,
+  TransactGetCommand,
+  TransactWriteCommand,
+  UpdateCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { createAwsSdkV3Adapter } from "../src/index.js";
 
 describe("aws-sdk-v3 adapter transact write serialization", () => {
@@ -129,5 +139,90 @@ describe("aws-sdk-v3 adapter transact write serialization", () => {
     );
     expect(out.unprocessedPuts).toEqual([{ tableName: "app", item: { pk: "P", sk: "S" } }]);
     expect(out.unprocessedDeletes).toEqual([{ tableName: "app", key: { pk: "D", sk: "K" } }]);
+  });
+
+  it("normalizes query and scan missing Items to empty arrays", async () => {
+    const send = vi.fn().mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    const docClient = { send } as unknown as import("@aws-sdk/lib-dynamodb").DynamoDBDocumentClient;
+    const adapter = createAwsSdkV3Adapter(docClient);
+
+    const q = await adapter.query({
+      tableName: "app",
+      keyConditionExpression: "#pk = :pk",
+      expressionAttributeNames: { "#pk": "pk" },
+      expressionAttributeValues: { ":pk": "A" },
+    });
+    const s = await adapter.scan({ tableName: "app" });
+
+    expect(send.mock.calls[0]?.[0]).toBeInstanceOf(QueryCommand);
+    expect(send.mock.calls[1]?.[0]).toBeInstanceOf(ScanCommand);
+    expect(q.items).toEqual([]);
+    expect(s.items).toEqual([]);
+  });
+
+  it("returns null when update has no Attributes", async () => {
+    const send = vi.fn(async () => ({}));
+    const docClient = { send } as unknown as import("@aws-sdk/lib-dynamodb").DynamoDBDocumentClient;
+    const adapter = createAwsSdkV3Adapter(docClient);
+
+    const out = await adapter.updateItem({
+      tableName: "app",
+      key: { pk: "A", sk: "B" },
+      updateExpression: "SET #n = :n",
+      expressionAttributeNames: { "#n": "name" },
+      expressionAttributeValues: { ":n": "Ada" },
+    });
+
+    expect(send.mock.calls[0]?.[0]).toBeInstanceOf(UpdateCommand);
+    expect(out).toBeNull();
+  });
+
+  it("normalizes batchGet missing Responses and UnprocessedKeys", async () => {
+    const send = vi.fn(async () => ({}));
+    const docClient = { send } as unknown as import("@aws-sdk/lib-dynamodb").DynamoDBDocumentClient;
+    const adapter = createAwsSdkV3Adapter(docClient);
+
+    const out = await adapter.batchGetItem({
+      tableName: "app",
+      keys: [{ pk: "A", sk: "B" }],
+    });
+
+    expect(send.mock.calls[0]?.[0]).toBeInstanceOf(BatchGetCommand);
+    expect(out.items).toEqual([]);
+    expect(out.unprocessedKeys).toBeUndefined();
+  });
+
+  it("maps transactGet responses positionally with hit/miss", async () => {
+    const send = vi.fn(async () => ({
+      Responses: [{ Item: { pk: "A", sk: "1" } }, {}],
+    }));
+    const docClient = { send } as unknown as import("@aws-sdk/lib-dynamodb").DynamoDBDocumentClient;
+    const adapter = createAwsSdkV3Adapter(docClient);
+
+    const out = await adapter.transactGetItems({
+      items: [
+        { tableName: "app", key: { pk: "A", sk: "1" } },
+        { tableName: "app", key: { pk: "A", sk: "2" } },
+      ],
+    });
+
+    expect(send.mock.calls[0]?.[0]).toBeInstanceOf(TransactGetCommand);
+    expect(out.responses).toEqual([{ pk: "A", sk: "1" }, null]);
+  });
+
+  it("omits ReturnValues when not provided for put/delete", async () => {
+    const send = vi.fn(async () => ({}));
+    const docClient = { send } as unknown as import("@aws-sdk/lib-dynamodb").DynamoDBDocumentClient;
+    const adapter = createAwsSdkV3Adapter(docClient);
+
+    await adapter.putItem({ tableName: "app", item: { pk: "A", sk: "B" } });
+    await adapter.deleteItem({ tableName: "app", key: { pk: "A", sk: "B" } });
+
+    const putCmd = send.mock.calls[0]?.[0] as PutCommand;
+    const delCmd = send.mock.calls[1]?.[0] as DeleteCommand;
+    expect(putCmd).toBeInstanceOf(PutCommand);
+    expect(delCmd).toBeInstanceOf(DeleteCommand);
+    expect(putCmd.input.ReturnValues).toBeUndefined();
+    expect(delCmd.input.ReturnValues).toBeUndefined();
   });
 });
