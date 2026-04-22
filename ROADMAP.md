@@ -1,8 +1,12 @@
 # Roadmap
 
 This is the public-facing roadmap for patternmesh. Items are **directional,
-not commitments**; we reserve the right to change priorities, designs, and
+not commitments** — we reserve the right to change priorities, designs, and
 delivery windows. For what has shipped, see [CHANGELOG.md](./CHANGELOG.md).
+
+**Latest published version:** `0.9.1` across `@patternmeshjs/core`,
+`@patternmeshjs/aws-sdk-v3`, and `@patternmeshjs/streams`. The next milestone
+is `v1.0` (API-stability commitment).
 
 ## What parity means for this product
 
@@ -27,32 +31,47 @@ requirement.
   `numberSet`, `json`, `pathRef`).
 - **v0.8:** `@patternmeshjs/streams` package, `ttl()` field, lifecycle recipes
   (`softDelete`, `archive`).
-
-## In progress — v0.9 (first OSS release)
-
-- Correctness and safety hardening (reserved-attribute guards, strict cursor
-  validation, `put` vs. strict `create` split, streams defaults).
-- Apache-2.0 licensing, full OSS metadata on every published package.
-- CI pipeline with Changesets-driven releases, npm OIDC provenance, and
-  `publint` / `attw` gates.
-- TypeDoc-generated API reference.
+- **v0.9 — first public OSS release:** reserved-attribute guards, strict
+  cursor validation, `put` vs. strict `create` split, stricter streams
+  defaults, Apache-2.0 licensing with complete OSS metadata on every
+  package, Changesets-driven releases with npm OIDC provenance, `publint`
+  and `attw` CI gates, TypeDoc-generated API reference, Pages-hosted docs
+  site, and a `tests-smoke/` consume-from-tarball harness in CI.
 
 ## Next — v1.0 (API stability)
 
+A deliberately narrow scope: lock the public API surface before layering new
+capabilities on top of it.
+
 - Public API-surface audit and stabilization commitment.
-- Per-package independent versioning (currently lockstep).
-- Named `SemVer` policy statement.
-- `tests-smoke/` consume-from-tarball harness in CI.
-- Additional adapter tests covering middleware/retry interop.
+- Per-package independent versioning (currently lockstep until `v1.0`).
+- Published SemVer policy anchored in [Versioning discipline](#versioning-discipline).
+- Additional adapter tests covering SDK middleware and retry interop.
+
+## Post-1.0 core extensions (exploring)
+
+Larger core features that are intentionally deferred until after the
+`v1.0` stability commitment, so they can land without thrashing the public
+surface.
+
+- **Multi-table `connect`:** one client, many `defineTable` roots, shared
+  adapter, cross-table transactions where AWS allows
+  (same-account / same-region).
+- **Schema versioning:** a `schemaVersion` field, read adapters that upgrade
+  older-shape items on read, and write-time migration hooks — paired with
+  `@patternmeshjs/migrations` for backfill orchestration.
+- **`toSdkCommand(compiled)` escape hatch:** formalize and document the
+  raw-command surface so advanced users keep 100% SDK option coverage for
+  niche flags the DSL never models.
 
 ## v1.1 – v1.3 — Operator-grade ergonomics (exploring)
 
-- **Policy / access lint**: warn on hot-path `FilterExpression` usage, non-`ALL`
-  GSI projection, accidental table scans.
-- **10 GB item-collection lint**: static check / warning when an item
+- **Policy / access lint:** warn on hot-path `FilterExpression` usage,
+  non-`ALL` GSI projection, accidental table scans.
+- **10 GB item-collection lint:** static check / warning when an item
   collection approaches the per-partition-key limit across base table plus
   all LSIs.
-- **Observability**: OpenTelemetry spans around adapter calls; log redaction
+- **Observability:** OpenTelemetry spans around adapter calls; log redaction
   hooks.
 - **Mock adapter + contract tests** against recorded `CompiledOperation`
   fixtures, published as part of `@patternmeshjs/testing`.
@@ -61,12 +80,12 @@ requirement.
 
 ## v2.0 — PartiQL, edge adapters, last-mile parity (exploring)
 
-- **Optional PartiQL package**: `ExecuteStatement` / `BatchExecuteStatement`
+- **Optional PartiQL package:** `ExecuteStatement` / `BatchExecuteStatement`
   with entity mapping where possible, raw row fallback otherwise.
-- **Alternative runtimes**: Bun / edge guidance; optional fetch-based
+- **Alternative runtimes:** Bun / edge guidance; optional fetch-based
   adapter if AWS-supported patterns warrant it.
-- **`toSdkCommand(compiled)` escape hatch**: 100% SDK option coverage for
-  niche flags the DSL never models, so advanced users never hit a wall.
+- **Full raw command surface:** guaranteed `toSdkCommand(compiled)` coverage
+  so advanced users never hit a wall at the SDK boundary.
 
 ## Ecosystem
 
@@ -86,15 +105,26 @@ requirement.
    `z.toJSONSchema(...)` export; the core compiler still owns keys and
    access-pattern planning. See
    [docs/dev/validation-boundary.md](./docs/dev/validation-boundary.md).
-3. **`@patternmeshjs/devtools`** (a.k.a. explain visualizer) — renders
-   compiled plans, entity-to-index routing, non-key-filter warnings, and
-   PR-ready plan reports. Directly reinforces our `explain()` story.
+3. **`@patternmeshjs/devtools`** (explain visualizer) — renders compiled
+   plans, entity-to-index routing, non-key-filter warnings, and PR-ready
+   plan reports. Directly reinforces the `explain()` story.
 4. **`@patternmeshjs/migrations`** — versioned item transforms, backfill
-   runner, checkpoint cursors, dry-run, rate limiting, index-rollout helpers.
-   Deliberately outside `core` because migrations need their own release
-   cadence and failure modes.
-5. **Visual modeler / schema explorer** — second-wave product once the
+   runner, checkpoint cursors, dry-run, rate limiting, index-rollout
+   helpers. Deliberately outside `core` because migrations need their own
+   release cadence and failure modes.
+5. **Visual modeler / schema explorer** — second-wave, only after the
    packages above have enough adoption to justify the tooling investment.
+
+### Streams and ingest adjacencies (exploring)
+
+- **`@patternmeshjs/kinesis`:** parallel package for Kinesis Data Streams
+  consumers, sharing the decoding and routing model with
+  `@patternmeshjs/streams`.
+- **Shard polling helpers:** direct `GetRecords` helpers for non-Lambda
+  consumers.
+- **Streams observability hooks:** typed `on*` callbacks for decode,
+  unknown-entity, and view-type-mismatch events in
+  `@patternmeshjs/streams`.
 
 ### Platform directions (long-term, directional)
 
@@ -105,15 +135,21 @@ requirement.
   `@patternmeshjs/zod` plus docs generation. Makes patternmesh models
   first-class citizens in API frameworks and structured-output tooling.
 - **AI / agent-friendly repo surface** (MCP-style tooling, machine-readable
-  model definitions, AGENTS.md discipline). Phase-3 exploration, not a
+  model definitions, `AGENTS.md` discipline). Phase-3 exploration, not a
   near-term goal, and it rides on top of the Zod / devtools / docs layers —
   not a separate product.
+
+### Smaller exploratory items
+
+- **DynamoDB Local helpers:** schema-from-`defineTable` create-table helper
+  to reduce onboarding friction.
+- **Cursor signing:** HMAC-signed opaque cursors for untrusted boundaries.
 
 ## DynamoDB parity checklist
 
 Tracking artifact for what the library covers at the SDK level. Statuses are
-approximate; CHANGELOG.md and package READMEs are the source of truth for any
-specific version.
+approximate; `CHANGELOG.md` and package READMEs are the source of truth for
+any specific version.
 
 ### Item APIs
 
@@ -160,25 +196,14 @@ specific version.
   or `UpdateBuilder.explain()` snapshot, a consumer's on-the-wire DynamoDB
   request changed — that is externally visible and needs the right bump.
 
-## Exploring (post-1.0, no commitments)
-
-- **DynamoDB Local helpers**: schema-from-`defineTable` create-table helper
-  to reduce onboarding friction.
-- **Observability hooks**: typed `on*` callbacks for decode / unknown-entity
-  / view-type-mismatch in `@patternmeshjs/streams`.
-- **Cursor signing**: HMAC-signed opaque cursors for untrusted boundaries.
-- **`@patternmeshjs/kinesis`**: parallel package for Kinesis Data Streams
-  consumers.
-- **Shard polling**: direct `GetRecords` helpers for non-Lambda consumers.
-
 ## Not planned
 
 Items we have explicitly decided not to pursue, with reasons.
 
 - **Global Tables / multi-region routing** — consumer-owned; DynamoDB
   handles the replication and we don't want to be in the routing business.
-- **Schema migrations** _inside_ `core` — migrations belong in
-  `@patternmeshjs/migrations` with their own cadence. Guidance lives in
+- **Schema migrations _inside_ `core`** — migration tooling belongs in
+  `@patternmeshjs/migrations` with its own cadence. Guidance lives in
   [docs/design/single-table-patterns.md](./docs/design/single-table-patterns.md).
 - **Automatic sharding** — the library exposes explicit key building so
   consumers can reason about hotspots; auto-sharding hides the problem.
@@ -188,7 +213,7 @@ Items we have explicitly decided not to pursue, with reasons.
   generated code."
 - **Visual Workbench clone as a primary product** — `@patternmeshjs/devtools`
   explains compiled plans; it does not try to replace NoSQL Workbench.
-- **Multi-backend / non-DynamoDB abstraction** — our differentiator is
+- **Multi-backend / non-DynamoDB abstraction** — the differentiator is
   access-pattern-first DynamoDB design. Broadening would weaken the story.
 - **Public `derived()` / `internal()` field builders** — these stay
   compiler-internal (see
