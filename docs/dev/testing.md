@@ -72,7 +72,7 @@ reproducible and failures are easier to triage.
 Coverage is enforced in each package via `vitest --coverage` and package-local
 thresholds:
 
-- `@patternmeshjs/core`: lines 76, branches 67, functions 75, statements 76
+- `@patternmeshjs/core`: lines 75, branches 67, functions 75, statements 75
 - `@patternmeshjs/aws-sdk-v3`:
   - with `DYNAMODB_ENDPOINT` (CI/release): lines 85, branches 80, functions 85, statements 85
   - without local endpoint: lines 25, branches 55, functions 30, statements 25
