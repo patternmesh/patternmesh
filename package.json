@@ -4,10 +4,12 @@
   "type": "module",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "build": "pnpm -r run build",
-    "test": "pnpm -r run test",
+    "build": "turbo run build",
+    "test": "turbo run test",
     "lint": "eslint .",
-    "typecheck": "pnpm -r exec tsc --noEmit",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "docs:api": "typedoc --options typedoc.core.json && typedoc --options typedoc.adapter.json && typedoc --options typedoc.streams.json",
     "docs:site": "node scripts/build-site.mjs --with-api",
     "publint": "publint packages/core && publint packages/adapter-aws-sdk-v3 && publint packages/streams",
@@ -15,16 +17,33 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "release": "changeset publish",
-    "smoke:pack": "node tests-smoke/smoke.mjs"
+    "smoke:pack": "node tests-smoke/smoke.mjs",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@changesets/cli": "^2.31.0",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^10.0.1",
     "eslint": "^10.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "marked": "^18.0.2",
+    "prettier": "^3.8.3",
     "publint": "^0.3.18",
     "syncpack": "^14.3.0",
+    "turbo": "^2.9.6",
     "typedoc": "^0.28.19",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.59.0"

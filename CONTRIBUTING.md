@@ -38,7 +38,7 @@ Tests are automatically skipped when `DYNAMODB_ENDPOINT` is unset.
 
 ## Repository layout
 
-```
+```text
 packages/
   core/                  # @patternmeshjs/core — modeling DSL, repositories, transactions
   adapter-aws-sdk-v3/    # @patternmeshjs/aws-sdk-v3 — DocumentClient adapter
@@ -81,6 +81,20 @@ TypeDoc output plus rendered markdown from `README.md`, `docs/*.md`, and
 `docs/guides/*.md`. The `pages.yml` workflow publishes this on every push to
 `main`.
 
+## Formatting
+
+This repo uses Prettier for formatting and ESLint for correctness rules.
+
+- format everything: `pnpm format`
+- check formatting only: `pnpm format:check`
+
+After pulling the one-shot formatting commit, configure git blame once so the
+mass reformat is hidden:
+
+```bash
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
 ## Local CI with act (optional)
 
 [act](https://github.com/nektos/act) runs our GitHub Actions workflows
@@ -95,7 +109,7 @@ act push -W .github/workflows/ci.yml --job test
 Host-specific flags belong in your personal `~/.actrc`, not the repo file.
 On an Apple Silicon Mac with Docker Desktop, the minimal override is:
 
-```
+```text
 --container-architecture linux/amd64
 ```
 
@@ -132,18 +146,25 @@ Caveats:
 4. **Add or update tests.** New behavior needs unit tests; integration tests
    where an adapter round-trip matters.
 5. **Run the full check locally**:
+
    ```bash
    pnpm build
    pnpm test
+   pnpm format:check
    pnpm lint
+   pnpm syncpack lint
    pnpm typecheck
    ```
+
 6. **Add a changeset** describing your change (required for any release):
+
    ```bash
    pnpm changeset
    ```
+
    Pick the affected packages and the appropriate bump type (`patch`,
    `minor`, or `major`). Commit the generated file alongside your change.
+
 7. **Open a pull request** against `main`. Fill in the PR template.
 
 ### Changeset guidance
@@ -165,26 +186,51 @@ behavior change.
 
 **Bump type mapping for this repo:**
 
-| Bump    | Use when                                                                            |
-| ------- | ----------------------------------------------------------------------------------- |
-| `patch` | bug fix with no API surface change; more permissive types; improved error messages  |
-| `minor` | new exported symbol; additive type widening; new entity/relation/recipe feature     |
-| `major` | removed or renamed export; narrowed types; changed runtime semantics of existing API|
+| Bump    | Use when                                                                             |
+| ------- | ------------------------------------------------------------------------------------ |
+| `patch` | bug fix with no API surface change; more permissive types; improved error messages   |
+| `minor` | new exported symbol; additive type widening; new entity/relation/recipe feature      |
+| `major` | removed or renamed export; narrowed types; changed runtime semantics of existing API |
 
 While we are on `0.x`, breaking changes are allowed in minor bumps per SemVer
 convention, but we still tag them as `major` in changesets so the CHANGELOG
 flags them clearly. Once we cut `1.0.0`, `major` will track SemVer strictly.
 
+## Git hooks
+
+Hooks are installed automatically by `pnpm install` via the root `prepare`
+script.
+
+- `pre-commit`: runs `lint-staged`, which applies `eslint --fix` and
+  `prettier --write` to staged files only.
+- `commit-msg`: runs `commitlint` with Conventional Commit rules.
+
+Bypass hooks only for emergencies:
+
+- `HUSKY=0 git commit -m "..."` (single command bypass)
+- `git commit --no-verify` (git-level bypass)
+
 ## Commit messages
 
-We do not mandate a strict convention, but clear, imperative subjects help
-during release. For example:
+Commit messages are validated with Conventional Commits. Use one of these
+types:
 
+- `feat`, `fix`, `docs`, `style`, `refactor`, `perf`
+- `test`, `build`, `ci`, `chore`, `revert`
+
+Examples:
+
+```text
+feat(core): add typed query cursor helper
+fix(streams): handle missing old image on ttl remove
+chore(ci): add format check and turbo cache
 ```
-Reject reserved attribute names at defineEntity
-Add isTtlRemove helper to @patternmeshjs/streams
-Fix batchGet reconciliation to be O(n)
-```
+
+Breaking changes can be marked as `feat!:` (or another type with `!`) and
+described in a `BREAKING CHANGE:` footer.
+
+Conventional commits keep history consistent, but package versioning is still
+driven by changesets (`.changeset/*.md`), not commit subjects.
 
 ## Code style
 
