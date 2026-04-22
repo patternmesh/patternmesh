@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, posix, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 
@@ -22,6 +22,11 @@ const pages = [
   { src: "SECURITY.md", dest: "SECURITY.html", title: "Security" },
   { src: "CODE_OF_CONDUCT.md", dest: "CODE_OF_CONDUCT.html", title: "Code of Conduct" },
   { src: "RELEASE_CHECKLIST.md", dest: "RELEASE_CHECKLIST.html", title: "Release checklist" },
+  {
+    src: "docs/design/README.md",
+    dest: "docs/design/index.html",
+    title: "Design docs",
+  },
   {
     src: "docs/design/single-table-patterns.md",
     dest: "docs/design/single-table-patterns.html",
@@ -80,6 +85,11 @@ const pages = [
     title: "Validation boundary",
   },
   {
+    src: "docs/guides/README.md",
+    dest: "docs/guides/index.html",
+    title: "Guides",
+  },
+  {
     src: "docs/guides/relations.md",
     dest: "docs/guides/relations.html",
     title: "Relations cookbook",
@@ -121,7 +131,9 @@ const pages = [
   },
 ];
 
-function rewriteHref(href) {
+const GITHUB_BLOB_BASE = "https://github.com/patternmesh/patternmesh/blob/main/";
+
+function rewriteHref(href, srcPath = "") {
   if (!href) return href;
   if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return href;
   if (href.startsWith("#")) return href;
@@ -130,20 +142,35 @@ function rewriteHref(href) {
   const [pathPart, anchor = ""] = href.split("#");
   const anchorSuffix = anchor ? `#${anchor}` : "";
 
-  let rewritten = pathPart;
-  if (rewritten.endsWith("README.md")) {
-    rewritten = rewritten.replace(/README\.md$/, "index.html");
-  } else if (rewritten.endsWith(".md")) {
-    rewritten = rewritten.replace(/\.md$/, ".html");
+  if (pathPart === "") return href;
+  if (pathPart.endsWith("/")) return pathPart + anchorSuffix;
+
+  if (pathPart.endsWith("README.md")) {
+    return pathPart.replace(/README\.md$/, "index.html") + anchorSuffix;
   }
-  return rewritten + anchorSuffix;
+  if (pathPart.endsWith(".md")) {
+    return pathPart.replace(/\.md$/, ".html") + anchorSuffix;
+  }
+  if (pathPart.endsWith(".html")) {
+    return pathPart + anchorSuffix;
+  }
+
+  // Non-markdown repo files (e.g. src/*.ts, package.json, LICENSE, workflow YAML)
+  // are not published to the site. Rewrite to the GitHub blob URL so the link
+  // still works on Pages.
+  if (srcPath) {
+    const srcDir = posix.dirname(srcPath.split(/[\\/]/).join("/"));
+    const normalized = posix.normalize(posix.join(srcDir, pathPart));
+    return GITHUB_BLOB_BASE + normalized + anchorSuffix;
+  }
+  return pathPart + anchorSuffix;
 }
 
-function renderMarkdown(md) {
+function renderMarkdown(md, srcPath) {
   const renderer = new marked.Renderer();
   const originalLink = renderer.link.bind(renderer);
   renderer.link = function link({ href, title, tokens }) {
-    return originalLink({ href: rewriteHref(href), title, tokens });
+    return originalLink({ href: rewriteHref(href, srcPath), title, tokens });
   };
   return marked.parse(md, { renderer, async: false, gfm: true });
 }
@@ -161,7 +188,7 @@ function writePage({ src, dest, title }) {
     return;
   }
   const md = readFileSync(srcPath, "utf8");
-  const body = renderMarkdown(md);
+  const body = renderMarkdown(md, src);
   const html = template
     .replaceAll("{{TITLE}}", title)
     .replaceAll("{{ROOT}}", rootRelative(dest))
