@@ -21,8 +21,21 @@ describe("update explain", () => {
     const op = db.E.update({ id: "x_1" as never })
       .set({ name: "n" })
       .explain();
-    expect(op.operation).toBe("UpdateItem");
-    expect(op.updateExpression).toMatch(/^SET /);
-    expect(op.key).toEqual({ pk: "P#x_1", sk: "S" });
+    expect({
+      operation: op.operation,
+      tableName: op.tableName,
+      key: op.key,
+      updateExpression: op.updateExpression,
+    }).toMatchInlineSnapshot(`
+      {
+        "key": {
+          "pk": "P#x_1",
+          "sk": "S",
+        },
+        "operation": "UpdateItem",
+        "tableName": "t",
+        "updateExpression": "SET #u0 = :u0",
+      }
+    `);
   });
 });

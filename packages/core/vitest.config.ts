@@ -5,5 +5,17 @@ export default defineConfig({
     globals: false,
     environment: "node",
     include: ["src/**/*.test.ts", "test/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      include: ["src/**/*.ts"],
+      exclude: ["src/**/*.test.ts", "test/**", "dist/**"],
+      thresholds: {
+        lines: 76,
+        branches: 67,
+        functions: 75,
+        statements: 76,
+      },
+    },
   },
 });

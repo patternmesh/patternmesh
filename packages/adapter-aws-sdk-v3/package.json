@@ -41,6 +41,9 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest run",
+    "test:unit": "vitest run test/index.unit.test.ts",
+    "test:integration": "vitest run test/dynamodb-local-*.integration.test.ts",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {

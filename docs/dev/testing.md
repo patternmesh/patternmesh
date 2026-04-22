@@ -23,7 +23,8 @@ packages/core/test/
 
 packages/adapter-aws-sdk-v3/test/
   index.unit.test.ts                     # unit tests over the adapter surface
-  dynamodb-local.integration.test.ts     # round-trip against DynamoDB Local
+  dynamodb-local.fixture.ts              # shared deterministic DynamoDB Local harness
+  dynamodb-local-*.integration.test.ts   # focused integration suites
 
 packages/streams/test/
   streams.test.ts
@@ -33,8 +34,10 @@ packages/streams/test/
 
 ```bash
 pnpm test                                # all packages
+pnpm test:coverage                       # all packages with threshold enforcement
 pnpm --filter @patternmeshjs/core test   # just core
 pnpm --filter @patternmeshjs/aws-sdk-v3 test  # adapter (needs DYNAMODB_ENDPOINT)
+pnpm --filter @patternmeshjs/aws-sdk-v3 test:integration
 ```
 
 Turbo caches `test` task results keyed on `src/**`, `test/**`,
@@ -59,6 +62,34 @@ pnpm --filter @patternmeshjs/aws-sdk-v3 test
 CI always sets `DYNAMODB_ENDPOINT` via the `docker compose up -d
 dynamodb-local` step in both `ci.yml` and `release.yml`, so integration tests
 run on every PR.
+
+Integration suites use deterministic table names derived from the suite name
+plus CI/local run IDs (instead of `Date.now()` / random suffixes) so reruns are
+reproducible and failures are easier to triage.
+
+## Coverage standards
+
+Coverage is enforced in each package via `vitest --coverage` and package-local
+thresholds:
+
+- `@patternmeshjs/core`: lines 76, branches 67, functions 75, statements 76
+- `@patternmeshjs/aws-sdk-v3`:
+  - with `DYNAMODB_ENDPOINT` (CI/release): lines 85, branches 80, functions 85, statements 85
+  - without local endpoint: lines 25, branches 55, functions 30, statements 25
+- `@patternmeshjs/streams`: lines 90, branches 85, functions 90, statements 90
+
+Run coverage locally with:
+
+```bash
+pnpm test:coverage
+```
+
+CI and release workflows run `pnpm test:coverage` so threshold regressions fail
+before merge/publish.
+
+CI uploads per-package `lcov.info` files as workflow artifacts (one artifact per
+Node matrix entry) so coverage output can be downloaded without re-running tests
+locally.
 
 ## Type tests
 
@@ -106,6 +137,20 @@ Existing snapshot coverage lives in `update-explain.test.ts` and in scattered
 Rule of thumb: if `explain` output changes, a consumer's `aws sdk` trace would
 change. That is externally visible and requires version-bump discipline
 (see [ROADMAP.md](../../ROADMAP.md) "Versioning discipline").
+
+## Property tests
+
+`packages/core/test/property.test.ts` uses
+[`fast-check`](https://github.com/dubzzz/fast-check) for invariant-driven
+coverage (cursor round-trips, key composition invariants, and batch chunking
+bounds). These tests are seeded to make CI failures reproducible.
+
+When debugging a failing property test, rerun with the same seed/path from the
+failure output:
+
+```bash
+pnpm --filter @patternmeshjs/core test -- --runInBand
+```
 
 ## Adding a new snapshot
 

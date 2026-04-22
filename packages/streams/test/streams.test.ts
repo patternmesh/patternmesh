@@ -59,6 +59,23 @@ describe("@patternmeshjs/streams", () => {
     expect(decoded.newItem).toMatchObject({ foo: "bar" });
   });
 
+  it("fails in strict mode for unknown entity", () => {
+    const r = record({
+      eventName: "INSERT",
+      dynamodb: {
+        StreamViewType: "NEW_IMAGE",
+        NewImage: { entity: { S: "Ghost" }, foo: { S: "bar" } },
+      },
+    });
+    expect(() =>
+      decodeStreamRecord(r, {
+        decoders: {},
+        unknownEntityMode: "strict",
+        requiredViewType: "any",
+      }),
+    ).toThrow(/Unknown entity discriminator/);
+  });
+
   it("fails on stream view type mismatch", () => {
     const r = record({
       eventName: "INSERT",
@@ -141,5 +158,14 @@ describe("@patternmeshjs/streams", () => {
     });
 
     expect(seen).toEqual(["usr_3"]);
+  });
+
+  it("rejects unsupported event names", () => {
+    expect(() =>
+      decodeStreamRecord(record({ eventName: "UNKNOWN" as never }), {
+        decoders: {},
+        requiredViewType: "any",
+      }),
+    ).toThrow(/Invalid eventName/);
   });
 });

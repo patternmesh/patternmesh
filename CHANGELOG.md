@@ -10,6 +10,30 @@ package changelogs may be split out in a future release.
 
 ## [Unreleased]
 
+### Changed
+
+- **Testing strategy hardening across packages.**
+  - Added coverage execution and thresholds to package Vitest configs, plus
+    root/package `test:coverage` scripts and Turbo task wiring.
+  - Expanded unit coverage in core (`key`, `cursor`, `validation`,
+    `update-explain`) and streams, and added adapter unit coverage for
+    transact/update/batch-write serialization branches.
+  - Split adapter DynamoDB Local integration coverage into focused suites
+    (`crud`, `index-scan`, `transact`, `orchestration`, `complex`) backed by a
+    shared deterministic fixture harness; removed the previous monolithic
+    integration file.
+  - Added seeded property tests in core (`fast-check`) for cursor round-trip,
+    key composition invariants, and batch explain chunking bounds.
+  - Clarified mock-adapter behavior boundaries and reduced test-casting noise in
+    relations tests.
+
+### CI
+
+- **Coverage reporting and workflow deduplication.**
+  - CI and release workflows now upload per-package LCOV reports as artifacts.
+  - Extracted duplicated CI/release validation logic into reusable workflow
+    `.github/workflows/validate.yml`, with `ci.yml` and `release.yml` calling it.
+
 ## [0.9.1] - 2026-04-21
 
 Maintenance release — no public API changes.
