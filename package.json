@@ -42,7 +42,7 @@
     "fast-check": "^4.7.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "marked": "^18.0.2",
+    "marked": "^18.0.3",
     "prettier": "^3.8.3",
     "publint": "^0.3.18",
     "syncpack": "^14.3.0",
